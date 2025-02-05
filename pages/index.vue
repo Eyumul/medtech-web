@@ -1,7 +1,7 @@
 <template>
     <div class="w-full flex flex-col gap-12 pb-12">
         <!-- navbar -->
-        <div class="flex sticky top-0 justify-between pt-4 pb-4 px-[48px] bg-white">
+        <div class="flex shadow-md sticky top-0 justify-between pt-4 pb-4 px-[48px] bg-white">
             <img src="../assets/images/medtechlogo.png" alt="Medtech Logo" class="w-36 h-auto"/>
             <div class="flex items-center gap-4 mr-8">
                 <Button variant="outline" class="border-medcolor-blue text-medcolor-blue hover:border-medcolor-green hover:text-medcolor-green hover:bg-transparent">
@@ -82,7 +82,122 @@
                         <TableCell>{{ member.codeNumber }}</TableCell>
                         <TableCell>{{ member.status }}</TableCell>
                         <TableCell class="flex justify-center">
-                            <icon name="tabler:dots-vertical"/>
+                            <DropdownMenu class="relative">
+                                <DropdownMenuTrigger>
+                                    <icon name="tabler:dots-vertical"/>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent class="absolute -right-5">
+                                    <!-- <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                    <DropdownMenuSeparator /> -->
+                                    <Dialog>
+                                        <DialogTrigger as-child>
+                                            <DropdownMenuItem class="text-medcolor-blue" @select.prevent>
+                                                <icon name="uil:edit" />
+                                                <span class="ml-2">Edit</span>
+                                            </DropdownMenuItem>
+                                        </DialogTrigger>
+                                        <DialogContent class="sm:max-w-[800px]">
+                                            <DialogHeader>
+                                                <DialogTitle class="text-3xl text-medcolor-blue font-bold">Edit member</DialogTitle>
+                                                <DialogDescription>
+                                                    Make sure edit what you want before you submit
+                                                </DialogDescription>
+                                            </DialogHeader>
+                                            <div class="grid grid-cols-2 gap-4 py-4">
+                                                <div class="grid grid-cols-4 items-center gap-4">
+                                                    <Label for="name" class="text-right text-medcolor-green font-bold">
+                                                        Name
+                                                    </Label>
+                                                    <Input type="text" v-model="member.name" placeholder="alex simpson" id="name" class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                                                </div>
+                                                <div class="grid grid-cols-4 items-center gap-4">
+                                                    <Label for="email" class="text-right text-medcolor-green font-bold">
+                                                        Email
+                                                    </Label>
+                                                    <Input type="text" v-model="member.email" placeholder="alex@example.com" id="email"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                                                </div>
+                                                <div class="grid grid-cols-4 items-center gap-4">
+                                                    <Label for="age" class="text-right text-medcolor-green font-bold">
+                                                        Age
+                                                    </Label>
+                                                    <Input type="number" v-model="member.age" placeholder="30" id="age"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                                                </div>
+                                                <div class="grid grid-cols-4 items-center gap-4">
+                                                    <Label for="salary" class="text-right text-medcolor-green font-bold">
+                                                        Salary
+                                                    </Label>
+                                                    <Input type="number" v-model="member.salary" placeholder="200000" id="salary"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                                                </div>
+                                                <div class="grid grid-cols-4 items-center gap-4">
+                                                    <Label for="position" class="text-right text-medcolor-green font-bold">
+                                                        Position
+                                                    </Label>
+                                                    <Input type="text" v-model="member.position" placeholder="accountant" id="position"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                                                </div>
+                                                <div class="grid grid-cols-4 items-center gap-4">
+                                                    <Label for="surety" class="text-right text-medcolor-green font-bold">
+                                                        Surety
+                                                    </Label>
+                                                    <Input type="text" v-model="member.surety" placeholder="Jhon" id="surety"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                                                </div>
+                                                <div class="grid grid-cols-4 items-center gap-4">
+                                                    <Label for="suretyDocument" class="text-right text-medcolor-green font-bold">
+                                                        Surety Document
+                                                    </Label>
+                                                    <Input type="file" id="suretyDocument"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                                                </div>
+                                                <div class="grid grid-cols-4 items-center gap-4">
+                                                    <Label for="educationalDocument" class="text-right text-medcolor-green font-bold">
+                                                        Educational Document
+                                                    </Label>
+                                                    <Input type="file" id="educationalDocument"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                                                </div>
+                                                <div class="grid grid-cols-4 items-center gap-4">
+                                                    <Label for="codeNumber" class="text-right text-medcolor-green font-bold">
+                                                        Code Number
+                                                    </Label>
+                                                    <Input type="text" v-model="member.codeNumber" placeholder="we238alex" id="codeNumber"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                                                </div>
+                                                <div class="grid grid-cols-4 items-center gap-4">
+                                                    <Label for="status" class="text-right text-medcolor-green font-bold">
+                                                        Status
+                                                    </Label>
+                                                    <Select v-model="member.status" class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3">
+                                                        <SelectTrigger class="w-[180px]">
+                                                        <SelectValue placeholder="Status" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                        <SelectGroup>
+                                                            <SelectLabel>--- Status ---</SelectLabel>
+                                                            <SelectItem value="Individual">
+                                                            Individual
+                                                            </SelectItem>
+                                                            <SelectItem value="Branch">
+                                                            Branch
+                                                            </SelectItem>
+                                                        </SelectGroup>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                            </div>
+                                            <DialogFooter>
+                                                <DialogClose as-child>
+                                                    <Button type="button" variant="outline" class="border-medcolor-blue px-12 text-medcolor-blue hover:border-medcolor-green hover:text-medcolor-green hover:bg-transparent">
+                                                        Cancel
+                                                    </Button>
+                                                </DialogClose>
+                                                <Button type="submit" class="bg-medcolor-blue px-12 hover:bg-medcolor-green">
+                                                    Save
+                                                </Button>
+                                            </DialogFooter>
+                                        </DialogContent>
+                                    </Dialog>
+                                    <DropdownMenuItem class="text-red-500">
+                                        <icon name="uil:trash-alt" />
+                                        <span class="ml-2">Delete</span>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </TableCell>
                     </TableRow>
                 </TableBody>
@@ -112,78 +227,78 @@
         <!-- add member section -->
         <Dialog>
             <DialogTrigger as-child>
-            <Button class="fixed shadow-xl bottom-[80px] right-[80px] h-12 bg-medcolor-blue hover:bg-medcolor-green">
-                <icon name="uil:plus-circle" class="size-6"></icon>
-                <p>Add Member</p>
-            </Button>
+                <Button class="fixed shadow-xl bottom-[80px] right-[80px] h-12 bg-medcolor-blue hover:bg-medcolor-green">
+                    <icon name="uil:plus-circle" class="size-6"></icon>
+                    <p>Add Member</p>
+                </Button>
             </DialogTrigger>
             <DialogContent class="sm:max-w-[800px]">
                 <DialogHeader>
-                    <DialogTitle class="text-2xl font-bold">Add member</DialogTitle>
+                    <DialogTitle class="text-3xl text-medcolor-blue font-bold">Add member</DialogTitle>
                     <DialogDescription>
                     Make sure to input all fields before you submit
                     </DialogDescription>
                 </DialogHeader>
                 <div class="grid grid-cols-2 gap-4 py-4">
                     <div class="grid grid-cols-4 items-center gap-4">
-                        <Label for="name" class="text-right">
+                        <Label for="name" class="text-right text-medcolor-green font-bold">
                             Name
                         </Label>
-                        <Input type="text" placeholder="alex simpson" id="name" class="col-span-3" />
+                        <Input type="text" placeholder="alex simpson" id="name" class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
                     </div>
                     <div class="grid grid-cols-4 items-center gap-4">
-                        <Label for="email" class="text-right">
+                        <Label for="email" class="text-right text-medcolor-green font-bold">
                             Email
                         </Label>
-                        <Input type="text" placeholder="alex@example.com" id="email"  class="col-span-3" />
+                        <Input type="text" placeholder="alex@example.com" id="email"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
                     </div>
                     <div class="grid grid-cols-4 items-center gap-4">
-                        <Label for="age" class="text-right">
+                        <Label for="age" class="text-right text-medcolor-green font-bold">
                             Age
                         </Label>
-                        <Input type="number" placeholder="30" id="age"  class="col-span-3" />
+                        <Input type="number" placeholder="30" id="age"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
                     </div>
                     <div class="grid grid-cols-4 items-center gap-4">
-                        <Label for="salary" class="text-right">
+                        <Label for="salary" class="text-right text-medcolor-green font-bold">
                             Salary
                         </Label>
-                        <Input type="number" placeholder="200000" id="salary"  class="col-span-3" />
+                        <Input type="number" placeholder="200000" id="salary"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
                     </div>
                     <div class="grid grid-cols-4 items-center gap-4">
-                        <Label for="position" class="text-right">
+                        <Label for="position" class="text-right text-medcolor-green font-bold">
                             Position
                         </Label>
-                        <Input type="text" placeholder="accountant" id="position"  class="col-span-3" />
+                        <Input type="text" placeholder="accountant" id="position"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
                     </div>
                     <div class="grid grid-cols-4 items-center gap-4">
-                        <Label for="surety" class="text-right">
+                        <Label for="surety" class="text-right text-medcolor-green font-bold">
                             Surety
                         </Label>
-                        <Input type="text" placeholder="Jhon" id="surety"  class="col-span-3" />
+                        <Input type="text" placeholder="Jhon" id="surety"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
                     </div>
                     <div class="grid grid-cols-4 items-center gap-4">
-                        <Label for="suretyDocument" class="text-right">
+                        <Label for="suretyDocument" class="text-right text-medcolor-green font-bold">
                             Surety Document
                         </Label>
-                        <Input type="file" id="suretyDocument"  class="col-span-3" />
+                        <Input type="file" id="suretyDocument"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
                     </div>
                     <div class="grid grid-cols-4 items-center gap-4">
-                        <Label for="educationalDocument" class="text-right">
+                        <Label for="educationalDocument" class="text-right text-medcolor-green font-bold">
                             Educational Document
                         </Label>
-                        <Input type="file" id="educationalDocument"  class="col-span-3" />
+                        <Input type="file" id="educationalDocument"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
                     </div>
                     <div class="grid grid-cols-4 items-center gap-4">
-                        <Label for="codeNumber" class="text-right">
+                        <Label for="codeNumber" class="text-right text-medcolor-green font-bold">
                             Code Number
                         </Label>
-                        <Input type="text" placeholder="we238alex" id="codeNumber"  class="col-span-3" />
+                        <Input type="text" placeholder="we238alex" id="codeNumber"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
                     </div>
                     <div class="grid grid-cols-4 items-center gap-4">
-                        <Label for="status" class="text-right">
+                        <Label for="status" class="text-right text-medcolor-green font-bold">
                             Status
                         </Label>
-                        <Select class="col-span-3">
+                        <Select class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3">
                             <SelectTrigger class="w-[180px]">
                             <SelectValue placeholder="Status" />
                             </SelectTrigger>
