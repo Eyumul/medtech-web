@@ -2,13 +2,13 @@
     <div class="w-full flex flex-col gap-12 pb-12">
         <!-- navbar -->
         <div class="flex sticky top-0 justify-between pt-4 pb-4 px-[48px] bg-white">
-            <img src="~/assets/images/medtechLogo.png" alt="Medtech Logo" class="w-36 h-auto"/>
+            <img src="../assets/images/medtechlogo.png" alt="Medtech Logo" class="w-36 h-auto"/>
             <div class="flex items-center gap-4 mr-8">
                 <Button variant="outline" class="border-medcolor-blue text-medcolor-blue hover:border-medcolor-green hover:text-medcolor-green hover:bg-transparent">
                     Logout
                 </Button>
                 <div class="flex gap-4 ml-16">
-                    <img src="~/assets/images/hrProfilePic.jpg" alt="HR Profile Picture" class="w-12 h-12 rounded-full object-cover"/>
+                    <img src="../assets/images/hrProfilePic.jpg" alt="HR Profile Picture" class="w-12 h-12 rounded-full object-cover"/>
                     <div>
                         <p class="text-medcolor-green font-bold">Abebe Kebede</p>
                         <p class="text-sm text-medcolor-blue font-medium">abeKebe@example.com</p>
@@ -18,7 +18,7 @@
         </div>
         <!-- intro section -->
         <div class="flex items px-[48px] gap-24">
-            <img src="~/assets/images/dashboardImage.jpg" alt="Dashboard Image" class="w-[800px] object-cover h-[400px] rounded-lg"/>
+            <img src="../assets/images/dashboardImage.jpg" alt="Dashboard Image" class="w-[800px] object-cover h-[400px] rounded-lg"/>
             <div class="flex flex-col gap-16">
                 <p class="text-6xl text-medcolor-blue font-bold">Welcome, <span class="text-medcolor-green">Abebe Kebede</span>👋</p>
                 <p class="text-xl text-medcolor-blue font-medium">We’re glad to have you on board. Here’s what you can do on your dashboard:</p>
