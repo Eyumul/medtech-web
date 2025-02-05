@@ -1,8 +1,5 @@
 <template>
-    <div>
-        <div>
-            <img src="~/assets/images/medtechlogo.png" alt="Medtech Logo" class="w-48 h-auto"/>
-        </div>
+    <div class="min-h-screen bg-gray-100">
         <slot/>
     </div>
 </template>
