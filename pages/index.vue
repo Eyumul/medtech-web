@@ -368,7 +368,8 @@ await fetchMembers();
 // fetch member and reset pagination
 const fetchAndResetPage = async () => {
     await fetchMembers();
-    currentPage.value = 1; // Reset pagination to first page
+    filteredMembers.value = members.value; // Reset the filtered list to include all members
+    currentPage.value = 1; // Reset pagination to the first page
 };
 
 const searchQuery = ref(''); // inputed value in the search field
@@ -431,6 +432,7 @@ const handleAdd = async () => {
             codeNumber: ''
         };
         await fetchAndResetPage();
+        handleSearch(); // Re-apply the search filter
         console.log("Member: " + newMember.value.name + " added SUCCESSFULLY")
     }
 };
@@ -441,6 +443,7 @@ const handleDelete = async (id) => {
         await deleteMember(id);
         alert("Member Removed successfully");
         await fetchAndResetPage();
+        handleSearch(); // Re-apply the search filter
     } else {
         alert("canceled");
     }
@@ -452,6 +455,7 @@ const handleUpdate = async (selectedMember) => {
     await updateMember(selectedMember._id, selectedMember);
     alert('Member updated successfully!');
     await fetchAndResetPage();
+    handleSearch(); // Re-apply the search filter
   }
 };
 </script>
