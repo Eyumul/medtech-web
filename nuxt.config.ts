@@ -5,6 +5,9 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss', 'shadcn-nuxt', '@nuxt/icon'
   ],
+  runtimeConfig: {
+    MONGO_URI: process.env.MONGO_URI
+  },
   shadcn: {
     /**
      * Prefix for all the imported component
