@@ -34,9 +34,9 @@
          <div class="flex justify-between px-[48px]">
             <p class="text-4xl font-black text-medcolor-blue">Members Managment</p>
             <div class="flex relative gap-1.5 items-center w-full max-w-lg h-12">
-                <Input type="text" placeholder="Search member" class="pl-12 h-full" />
+                <Input type="text" v-model="searchQuery" placeholder="Search member by name" class="pl-12 h-full" />
                 <icon name="uil:search" class="absolute left-2 size-6 text-gray-300 ring-2 ring-red-500"/>
-                <Button type="submit" class="bg-medcolor-blue hover:bg-medcolor-green h-full px-12">Search</Button>
+                <Button @click="handleSearch" type="submit" class="bg-medcolor-blue hover:bg-medcolor-green h-full px-12">Search</Button>
             </div>
          </div>
         <!-- table section -->
@@ -221,7 +221,7 @@
         </div>
         <!-- pagination -->
         <div class="px-[48px] w-full flex justify-center">
-            <Pagination v-slot="{ page }" v-model:page="currentPage" :total="members.length" :items-per-page="pageSize" :sibling-count="1" show-edges>
+            <Pagination v-slot="{ page }" v-model:page="currentPage" :total="filteredMembers.length" :items-per-page="pageSize" :sibling-count="1" show-edges>
                 <PaginationList v-slot="{ items }" class="flex items-center gap-1">
                     <PaginationFirst />
                     <PaginationPrev />
@@ -374,14 +374,29 @@ const fetchAndResetPage = async () => {
     currentPage.value = 1; // Reset pagination to first page
 };
 
+const searchQuery = ref(''); // inputed value in the search field
 const currentPage = ref(1); // Current page number
 const pageSize = 4; // Members per page
+const filteredMembers = ref(members.value); // Store filtered members
 
-// Paginated members
+// Paginate the filtered members
 const paginatedMembers = computed(() => {
     const start = (currentPage.value - 1) * pageSize;
-    return members.value.slice(start, start + pageSize);
+    return filteredMembers.value.slice(start, start + pageSize);
 });
+
+// Update filtered members when search is triggered
+const handleSearch = () => {
+    // Filter members based on the search query
+    if (!searchQuery.value.trim()) {
+        filteredMembers.value = members.value; // If search is empty, show all members
+    } else {
+        filteredMembers.value = members.value.filter(member =>
+            member.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+        );
+    }
+    currentPage.value = 1; // Reset to first page on search
+};
 
 // Function to change the uploaded document to Base64 string
 const handleFileUpload = (event, field, member = newMember.value) => {
