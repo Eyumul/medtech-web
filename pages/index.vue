@@ -182,16 +182,13 @@
                                                         <SelectTrigger class="w-[180px]">
                                                         <SelectValue placeholder="Status" />
                                                         </SelectTrigger>
-                                                        <SelectContent>
-                                                        <SelectGroup>
-                                                            <SelectLabel>--- Status ---</SelectLabel>
-                                                            <SelectItem value="Individual">
-                                                            Individual
-                                                            </SelectItem>
-                                                            <SelectItem value="Branch">
-                                                            Branch
-                                                            </SelectItem>
-                                                        </SelectGroup>
+                                                        <SelectContent class="h-[240px]">
+                                                            <SelectGroup>
+                                                                <SelectLabel>--- Status ---</SelectLabel>
+                                                                <SelectItem v-for="status of statusTypes" :key="status" :value="status">
+                                                                    {{status}}
+                                                                </SelectItem>
+                                                            </SelectGroup>
                                                         </SelectContent>
                                                     </Select>
                                                 </div>
@@ -318,16 +315,13 @@
                             <SelectTrigger class="w-[180px]">
                             <SelectValue placeholder="Status" />
                             </SelectTrigger>
-                            <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel>--- Status ---</SelectLabel>
-                                <SelectItem value="Individual">
-                                Individual
-                                </SelectItem>
-                                <SelectItem value="Branch">
-                                Branch
-                                </SelectItem>
-                            </SelectGroup>
+                            <SelectContent class="h-[240px]">
+                                <SelectGroup>
+                                    <SelectLabel>--- Status ---</SelectLabel>
+                                    <SelectItem v-for="status of statusTypes" :key="status" :value="status">
+                                        {{status}}
+                                    </SelectItem>
+                                </SelectGroup>
                             </SelectContent>
                         </Select>
                     </div>
@@ -350,6 +344,9 @@
 <script setup>
 import { useMembers } from '~/composables/useMembers';
 const { members, addMember, fetchMembers, updateMember, deleteMember } = useMembers();
+
+// options for status field
+const statusTypes = ref(["Individual", "EAAZ(AA)", "SAAZ(AA)", "SWAAZ(AA)", "WAAZ(AA)", "NAAZ(AA)", "IMMIGRATION(AA)", "CAAZ(AA)", "NR(AXUM)", "NR(ADIGRAT)", "NR(SHIRE)", "NR(ADWA)", "SR(HAWASSA)", "SR(SHASHEMENE)", "SER(ZEWAY)", "SER(ADAMA)", "NER(KOMBOLCHA)", "NER(DESSIE)", "CNR(DIBRE BRIHAN)", "CNR(FICHE)", "CNR(SULULTA)", "NEER(SEMERA)", "NEER(AWASH)", "SSWR(SODO)", "SSWR(ARBAMINCH)"]);
 
 // ref value for add member inputs
 const newMember = ref({

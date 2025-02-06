@@ -33,7 +33,7 @@ const membersSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["Individual", "Branch"],
+    enum: ["Individual", "EAAZ(AA)", "SAAZ(AA)", "SWAAZ(AA)", "WAAZ(AA)", "NAAZ(AA)", "IMMIGRATION(AA)", "CAAZ(AA)", "NR(AXUM)", "NR(ADIGRAT)", "NR(SHIRE)", "NR(ADWA)", "SR(HAWASSA)", "SR(SHASHEMENE)", "SER(ZEWAY)", "SER(ADAMA)", "NER(KOMBOLCHA)", "NER(DESSIE)", "CNR(DIBRE BRIHAN)", "CNR(FICHE)", "CNR(SULULTA)", "NEER(SEMERA)", "NEER(AWASH)", "SSWR(SODO)", "SSWR(ARBAMINCH)"],
     required: true,
   },
   educationalDocument: {
