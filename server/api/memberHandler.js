@@ -10,10 +10,19 @@ export default defineEventHandler(async (event) => {
 
   switch (method) {
     case 'POST': {
-      const newMember = new Members(body);
-      const savedMember = await newMember.save();
-      return { message: 'Member created successfully', member: savedMember };
-    }
+      try {
+        const newMember = new Members(body);
+        const savedMember = await newMember.save();
+        return { message: 'Member created successfully', member: savedMember };
+      } catch (error) {
+        console.error("Server Error:", error);
+        throw createError({
+          statusCode: 500,
+          statusMessage: "Internal Server Error",
+          message: "Failed to add member. Please check your input and try again."
+        });
+      }
+    }    
     case 'PUT': {
       const updatedMember = await Members.findByIdAndUpdate(
         id,

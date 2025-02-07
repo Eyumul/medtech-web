@@ -257,62 +257,62 @@
                         <Label for="name" class="text-right text-medcolor-green font-bold">
                             Name
                         </Label>
-                        <Input v-model="newMember.name" type="text" placeholder="alex simpson" id="name" class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                        <Input v-model="name" :="nameAttrs" type="text" placeholder="alex simpson" id="name" class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" :class="errors.name ? 'border-red-500' : ''" />
                     </div>
                     <div class="grid grid-cols-4 items-center gap-4">
                         <Label for="email" class="text-right text-medcolor-green font-bold">
                             Email
                         </Label>
-                        <Input v-model="newMember.email" type="text" placeholder="alex@example.com" id="email"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                        <Input v-model="email" :="emailAttrs" type="text" placeholder="alex@example.com" id="email"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" :class="errors.email ? 'border-red-500' : ''" />
                     </div>
                     <div class="grid grid-cols-4 items-center gap-4">
                         <Label for="age" class="text-right text-medcolor-green font-bold">
                             Age
                         </Label>
-                        <Input v-model="newMember.age" type="number" placeholder="30" id="age"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                        <Input v-model="age" :="ageAttrs" type="number" placeholder="30" id="age"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" :class="errors.age ? 'border-red-500' : ''" />
                     </div>
                     <div class="grid grid-cols-4 items-center gap-4">
                         <Label for="salary" class="text-right text-medcolor-green font-bold">
                             Salary
                         </Label>
-                        <Input v-model="newMember.salary" type="number" placeholder="200000" id="salary"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                        <Input v-model="salary" :="salaryAttrs" type="number" placeholder="200000" id="salary"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" :class="errors.salary ? 'border-red-500' : ''" />
                     </div>
                     <div class="grid grid-cols-4 items-center gap-4">
                         <Label for="position" class="text-right text-medcolor-green font-bold">
                             Position
                         </Label>
-                        <Input v-model="newMember.position" type="text" placeholder="accountant" id="position"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                        <Input v-model="position" :="positionAttrs" type="text" placeholder="accountant" id="position"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" :class="errors.position ? 'border-red-500' : ''" />
                     </div>
                     <div class="grid grid-cols-4 items-center gap-4">
                         <Label for="surety" class="text-right text-medcolor-green font-bold">
                             Surety
                         </Label>
-                        <Input v-model="newMember.surety" type="text" placeholder="Jhon" id="surety"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                        <Input v-model="surety" :="suretyAttrs" type="text" placeholder="Jhon" id="surety"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" :class="errors.surety ? 'border-red-500' : ''" />
                     </div>
                     <div class="grid grid-cols-4 items-center gap-4">
                         <Label for="suretyDocument" class="text-right text-medcolor-green font-bold">
                             Surety Document
                         </Label>
-                        <Input @change="handleFileUpload($event, 'suretyDocument')" accept=".pdf" required type="file" id="suretyDocument"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                        <Input @change="handleFileUpload($event, 'suretyDocument')" accept=".pdf" required type="file" id="suretyDocument"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" :class="errors.suretyDocument ? 'border-[1px] border-red-500' : ''"  />
                     </div>
                     <div class="grid grid-cols-4 items-center gap-4">
                         <Label for="educationalDocument" class="text-right text-medcolor-green font-bold">
                             Educational Document
                         </Label>
-                        <Input @change="handleFileUpload($event, 'educationalDocument')" accept=".pdf" required type="file" id="educationalDocument"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                        <Input @change="handleFileUpload($event, 'educationalDocument')" accept=".pdf" required type="file" id="educationalDocument"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" :class="errors.educationalDocument ? 'border-[1px] border-red-500' : ''" />
                     </div>
                     <div class="grid grid-cols-4 items-center gap-4">
                         <Label for="codeNumber" class="text-right text-medcolor-green font-bold">
                             Code Number
                         </Label>
-                        <Input v-model="newMember.codeNumber" type="text" placeholder="we238alex" id="codeNumber"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                        <Input v-model="codeNumber" :="codeNumberAttrs" type="text" placeholder="we238alex" id="codeNumber"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" :class="errors.codeNumber ? 'border-red-500' : ''" />
                     </div>
                     <div class="grid grid-cols-4 items-center gap-4">
                         <Label for="status" class="text-right text-medcolor-green font-bold">
                             Status
                         </Label>
-                        <Select v-model="newMember.status" class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3">
-                            <SelectTrigger class="w-[180px]">
+                        <Select v-model="status" :="statusAttrs" class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3">
+                            <SelectTrigger class="w-[180px]" :class="errors.status ? 'border-[1px] border-red-500' : ''">
                             <SelectValue placeholder="Status" />
                             </SelectTrigger>
                             <SelectContent class="h-[240px]">
@@ -325,6 +325,21 @@
                             </SelectContent>
                         </Select>
                     </div>
+                </div>
+                <div class="flex flex-wrap mb-4 gap-x-2 gap-y-[1px] text-red-500 text-sm font-medium">
+                    <p class="text-medcolor-blue mr-2 font-black">Message: </p>
+                    <p v-if="errors.name">{{ errors.name }}</p>
+                    <p v-if="errors.email">{{ errors.email }}</p>
+                    <p v-if="errors.age">{{ errors.age }}</p>
+                    <p v-if="errors.salary">{{ errors.salary }}</p>
+                    <p v-if="errors.position">{{ errors.position }}</p>
+                    <p v-if="errors.surety">{{ errors.surety }}</p>
+                    <p v-if="errors.codeNumber">{{ errors.codeNumber }}</p>
+                    <p v-if="errors.status">{{ errors.status }}</p>
+                    <p v-if="errors.suretyDocument">{{ errors.suretyDocument }}</p>
+                    <p v-if="errors.educationalDocument">{{ errors.educationalDocument }}</p>
+                    <!-- <p v-if="response">{{ response.error }}</p>
+                    <p v-if="response" class="text-green-500">{{ response.message }}</p> -->
                 </div>
                 <DialogFooter>
                     <DialogClose as-child>
@@ -343,6 +358,7 @@
 
 <script setup>
 import { useMembers } from '~/composables/useMembers';
+import * as yup from 'yup';
 const { members, addMember, fetchMembers, updateMember, deleteMember } = useMembers();
 
 // options for status field
@@ -364,6 +380,37 @@ const newMember = ref({
 
 // fetch members data from database
 await fetchMembers();
+
+// validation setting
+// validation check function
+const schema = yup.object({
+    name: yup.string().required('Name is required'),
+    surety: yup.string().required('Surety is required'),
+    suretyDocument: yup.string().required('Surety document is required'),
+    educationalDocument: yup.string().required('Educational document is required'),
+    email: yup.string().email('Invalid email').required('Email is required'),
+    age: yup.number().positive('Age must be positive').required('Age is required'),
+    position: yup.string().required('Position is required'),
+    salary: yup.number().positive('Salary must be positive').required('Salary is required'),
+    codeNumber: yup.string().required('Code Number is required'),
+    status: yup.string().required('Status is required'),
+});
+
+//validation schema
+const { handleSubmit, errors, defineField } = useForm({
+    validationSchema: schema,
+});
+
+const [name, nameAttrs] = defineField('name');
+const [surety, suretyAttrs] = defineField('surety');
+const [suretyDocument, suretyDocumentAttrs] = defineField('suretyDocument');
+const [educationalDocument, educationalDocumentAttrs] = defineField('educationalDocument');
+const [email, emailAttrs] = defineField('email');
+const [age, ageAttrs] = defineField('age');
+const [position, positionAttrs] = defineField('position');
+const [salary, salaryAttrs] = defineField('salary');
+const [codeNumber, codeNumberAttrs] = defineField('codeNumber');
+const [status, statusAttrs] = defineField('status');
 
 // fetch member and reset pagination
 const fetchAndResetPage = async () => {
@@ -389,8 +436,14 @@ const handleSearch = () => {
     if (!searchQuery.value.trim()) {
         filteredMembers.value = members.value; // If search is empty, show all members
     } else {
+        const query = searchQuery.value.toLowerCase();
         filteredMembers.value = members.value.filter(member =>
-            member.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+            member.name.toLowerCase().includes(query) ||
+            member.email.toLowerCase().includes(query) ||
+            member.position.toLowerCase().includes(query) ||
+            member.surety.toLowerCase().includes(query) ||
+            member.codeNumber.toLowerCase().includes(query) ||
+            member.status.toLowerCase().includes(query)
         );
     }
     currentPage.value = 1; // Reset to first page on search
@@ -399,6 +452,11 @@ const handleSearch = () => {
 // Function to change the uploaded document to Base64 string
 const handleFileUpload = (event, field, member = newMember.value) => {
     const file = event.target.files[0];
+    if (field == 'suretyDocument'){
+        suretyDocument.value = event.target.files[0];
+    } else if ( field == 'educationalDocument') {
+        educationalDocument.value = event.target.files[0];
+    }
 
     if (file) {
         const reader = new FileReader();
@@ -414,11 +472,31 @@ const handleFileUpload = (event, field, member = newMember.value) => {
     }
 };
 
+// Sync vee-validate fields with newMember
+const fields = { name, email, age, position, salary, surety, suretyDocument, educationalDocument, codeNumber, status };
+
+Object.entries(fields).forEach(([key, field]) => {
+  watch(field, (newValue) => {
+    newMember.value[key] = newValue;
+  });
+});
+
 // Function to add new members to the databse
-const handleAdd = async () => {
-    if (newMember.value.name && newMember.value.email) {
-        await addMember(newMember.value);
-        alert("Member: " + newMember.value.name + " added SUCCESSFULLY")
+
+const handleAdd = handleSubmit(async () => {
+    const response = await addMember(newMember.value);
+
+    if (response?.error) {
+        console.error("Failed to add member:", response.error);
+        // Display user-friendly error message
+        alert("❗ Error: " + response.error);
+    } else {
+        console.log("Success:", response);
+        alert("✅ Member: " + newMember.value.name + " added SUCCESSFULLY");
+        await fetchAndResetPage();
+        handleSearch(); // Re-apply search filter
+
+        // Reset form fields
         newMember.value = {
             name: '',
             email: '',
@@ -431,21 +509,18 @@ const handleAdd = async () => {
             educationalDocument: '',
             codeNumber: ''
         };
-        await fetchAndResetPage();
-        handleSearch(); // Re-apply the search filter
-        console.log("Member: " + newMember.value.name + " added SUCCESSFULLY")
     }
-};
+});
 
 //Function to delete a member
 const handleDelete = async (id) => {
-    if (confirm('Are you sure want to remove this member') == true) {
+    if (confirm('⚠️ Are you sure want to remove this member') == true) {
         await deleteMember(id);
-        alert("Member Removed successfully");
+        alert("✅ Member removed SUCCESSFULLY");
         await fetchAndResetPage();
         handleSearch(); // Re-apply the search filter
     } else {
-        alert("canceled");
+        alert("Removal canceled ❌");
     }
 };
 
@@ -453,7 +528,7 @@ const handleDelete = async (id) => {
 const handleUpdate = async (selectedMember) => {
   if (selectedMember) {
     await updateMember(selectedMember._id, selectedMember);
-    alert('Member updated successfully!');
+    alert('✅ Member: ' + selectedMember.name + ' updated SUCCESSFULLY!');
     await fetchAndResetPage();
     handleSearch(); // Re-apply the search filter
   }

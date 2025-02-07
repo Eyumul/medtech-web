@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
   modules: [
-    '@nuxtjs/tailwindcss', 'shadcn-nuxt', '@nuxt/icon'
+    '@nuxtjs/tailwindcss', 'shadcn-nuxt', '@nuxt/icon', '@vee-validate/nuxt'
   ],
   runtimeConfig: {
     MONGO_URI: process.env.MONGO_URI
