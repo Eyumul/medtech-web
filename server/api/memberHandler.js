@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
         throw createError({
           statusCode: 500,
           statusMessage: "Internal Server Error",
-          message: "Failed to add member. Please check your input and try again."
+          message: "Failed to add member. Please check if the EMAIL and CODE NUMBER are unique and try again."
         });
       }
     }    

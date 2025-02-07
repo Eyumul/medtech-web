@@ -2,14 +2,14 @@
     <div class="w-full flex flex-col gap-12 pb-12">
         <!-- navbar -->
         <div class="flex shadow-md sticky top-0 justify-between pt-4 pb-4 px-[48px] bg-white">
-            <img src="../assets/images/medtechlogo.png" alt="Medtech Logo" class="w-36 h-auto"/>
+            <img @click="router.push({ path: '/' })" src="../assets/images/medtechlogo.png" alt="Medtech Logo" class="cursor-pointer w-36 h-auto"/>
             <div class="flex items-center gap-4 ">
                 <Button @click="router.push({ path: '/' })" variant="outline" class="border-medcolor-blue text-medcolor-blue hover:border-medcolor-green hover:text-medcolor-green hover:bg-transparent">
                     Logout
                 </Button>
-                <div class="flex gap-4 ml-24">
+                <div class="flex items-center gap-4 ml-24">
                     <!-- <img src="../assets/images/hrProfilePic.jpg" alt="HR Profile Picture" class="w-12 h-12 rounded-full object-cover"/> -->
-                    <icon name="material-symbols:account-circle-full" class="w-12 h-12 rounded-full text-medcolor-green p-2" />
+                    <icon name="material-symbols:account-circle-full" class="size-11 rounded-full text-medcolor-blue p-2" />
                     <div>
                         <p class="text-medcolor-green font-bold">{{ logedInUserName }}</p>
                         <p class="text-sm text-medcolor-blue font-medium">{{ logedInUserEmail }}</p>
@@ -532,13 +532,13 @@ const handleAdd = handleSubmit(async () => {
 
 //Function to delete a member
 const handleDelete = async (id) => {
-    if (confirm('⚠️ Are you sure want to remove this member') == true) {
+    if (confirm('⚠️ Are you sure you want to remove this member? click OK to confirm.') == true) {
         await deleteMember(id);
         alert("✅ Member removed SUCCESSFULLY");
         await fetchAndResetPage();
         handleSearch(); // Re-apply the search filter
     } else {
-        alert("Removal canceled ❌");
+        alert("Member deletion process canceled ❌");
     }
 };
 

@@ -1,6 +1,6 @@
 <template>
     <div class="min-h-screen min-w-screen bg-white flex justify-center items-start pt-64">
-        <img src="../assets/images/medtechlogo.png" alt="Medtech Logo" class="absolute left-[48px] top-4 w-36 h-auto"/>
+        <img src="../assets/images/medtechlogo.png" alt="Medtech Logo" class="absolute cursor-pointer left-[48px] top-4 w-36 h-auto"/>
         <div class="flex flex-col items-center gap-3 w-[350px]">
             <p class="text-2xl font-bold text-medcolor-blue mb-8">Login page</p>
             <div class="w-full relative flex items-center">
