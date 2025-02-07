@@ -24,7 +24,9 @@
         "yup": "^1.6.1",
       },
       "devDependencies": {
+        "@iconify-json/hugeicons": "^1.2.3",
         "@iconify-json/ic": "^1.2.2",
+        "@iconify-json/material-symbols": "^1.2.14",
         "@iconify-json/tabler": "^1.2.15",
         "@iconify-json/uil": "^1.2.3",
       },
@@ -163,7 +165,11 @@
 
     "@floating-ui/vue": ["@floating-ui/vue@1.1.6", "", { "dependencies": { "@floating-ui/dom": "^1.0.0", "@floating-ui/utils": "^0.2.9", "vue-demi": ">=0.13.0" } }, "sha512-XFlUzGHGv12zbgHNk5FN2mUB7ROul3oG2ENdTpWdE+qMFxyNxWSRmsoyhiEnpmabNm6WnUvR1OvJfUfN4ojC1A=="],
 
+    "@iconify-json/hugeicons": ["@iconify-json/hugeicons@1.2.3", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-EujzAC9jlyJY+iFA2ehXoTgGfjKxMMD9xWGQbbo0MlqZelkg/dmENlqIMJjLy9B1sZltw1ol5eYhhzY69TwkQw=="],
+
     "@iconify-json/ic": ["@iconify-json/ic@1.2.2", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-QmjwS3lYiOmVWgTCEOTFyGODaR/+689+ajep/VsrCcsUN0Gdle5PmIcibDsdmRyrOsW/E77G41UUijdbjQUofw=="],
+
+    "@iconify-json/material-symbols": ["@iconify-json/material-symbols@1.2.14", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-S0AAFFQPVr8Dkrprspz/otNjxdD3rJRXDGZjbO8a8zn8ZR5mO8jAF81lVoTfUWxPH6SCtH2lK1JQGXHGPxld7g=="],
 
     "@iconify-json/tabler": ["@iconify-json/tabler@1.2.15", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-EMEOt1PubLxcbwHMO9XmHT601A/2fCNd7fK50p5Qh42xvVxCvO3YhhGuGMAk6t6VkdSZYLQ14Y2bYPcom1aFeQ=="],
 
