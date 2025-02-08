@@ -34,6 +34,20 @@
         <!-- header section -->
          <div class="flex justify-between px-[48px]">
             <p class="text-4xl font-black text-medcolor-blue">Members Managment</p>
+            <RadioGroup v-model="filterState" class="flex gap-6 mt-2 mr-[450px]" default-value="all">
+                <div class="flex items-center space-x-2">
+                    <RadioGroupItem class="size-5 hover:text-medcolor-green hover:border-medcolor-green text-medcolor-blue border-medcolor-blue" id="r1" value="all" />
+                    <Label class="text-base text-medcolor-green font-bold" for="r1">All</Label>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <RadioGroupItem class="size-5 hover:text-medcolor-green hover:border-medcolor-green text-medcolor-blue border-medcolor-blue" id="r2" value="active" />
+                    <Label class="text-base text-medcolor-green font-bold" for="r2">Active</Label>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <RadioGroupItem class="size-5 hover:text-medcolor-green hover:border-medcolor-green text-medcolor-blue border-medcolor-blue" id="r3" value="deactivated" />
+                    <Label class="text-base text-medcolor-green font-bold" for="r3">Deactivated</Label>
+                </div>
+            </RadioGroup>
             <div class="flex relative gap-1.5 items-center w-full max-w-lg h-12">
                 <Input type="text" v-model="searchQuery" placeholder="Search by name, email, position, ..." class="pl-12 h-full" />
                 <icon name="uil:search" class="absolute left-2 size-6 text-gray-300 ring-2 ring-red-500"/>
@@ -57,6 +71,7 @@
                         <TableHead class="text-center">Educational Document</TableHead>
                         <TableHead>Code N<u>o</u></TableHead>
                         <TableHead>Status</TableHead>
+                        <TableHead>State</TableHead>
                         <TableHead class="text-center">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -82,6 +97,7 @@
 
                         <TableCell>{{ member.codeNumber }}</TableCell>
                         <TableCell>{{ member.status }}</TableCell>
+                        <TableCell :class="member.deactivated ? 'text-red-600':'text-green-500'">{{ member.deactivated ? 'Deactivated' : 'Active' }}</TableCell>
                         <TableCell class="flex justify-center">
                             <DropdownMenu class="relative">
                                 <DropdownMenuTrigger>
@@ -92,7 +108,7 @@
                                     <DropdownMenuSeparator /> -->
                                     <Dialog>
                                         <DialogTrigger as-child>
-                                            <DropdownMenuItem class="text-medcolor-blue" @select.prevent>
+                                            <DropdownMenuItem class="text-medcolor-blue font-medium" @select.prevent>
                                                 <icon name="uil:edit" />
                                                 <span class="ml-2">Edit</span>
                                             </DropdownMenuItem>
@@ -206,7 +222,13 @@
                                             </DialogFooter>
                                         </DialogContent>
                                     </Dialog>
-                                    <DropdownMenuItem @click="handleDelete(member._id)" class="text-red-500">
+                                    <DropdownMenuItem @click="toggleMemberState(member)" class="text-medcolor-blue font-medium">
+                                        <icon v-if="member.deactivated" name="uil:play" />
+                                        <span v-if="member.deactivated" class="ml-2">Activate</span>
+                                        <icon v-if="!member.deactivated" name="uil:pause" />
+                                        <span v-if="!member.deactivated" class="ml-2">Deactivate</span>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem @click="handleDelete(member._id)" class="text-red-500 font-medium">
                                         <icon name="uil:trash-alt" />
                                         <span class="ml-2">Delete</span>
                                     </DropdownMenuItem>
@@ -219,7 +241,7 @@
         </div>
         <!-- pagination -->
         <div class="px-[48px] w-full flex justify-center">
-            <Pagination v-slot="{ page }" v-model:page="currentPage" :total="filteredMembers.length" :items-per-page="pageSize" :sibling-count="1" show-edges>
+            <Pagination v-slot="{ page }" v-model:page="currentPage" :total="searchedMebmers.length" :items-per-page="pageSize" :sibling-count="1" show-edges>
                 <PaginationList v-slot="{ items }" class="flex items-center gap-1">
                     <PaginationFirst />
                     <PaginationPrev />
@@ -249,8 +271,9 @@
             <DialogContent class="sm:max-w-[800px]">
                 <DialogHeader>
                     <DialogTitle class="text-3xl text-medcolor-blue font-bold">Add member</DialogTitle>
-                    <DialogDescription>
-                    Make sure to input all fields before you submit
+                    <DialogDescription class="flex justify-between">
+                        <p>Make sure to input all fields before you submit</p>
+                        <p @click="resetFields" class="text-medcolor-blue font-bold cursor-pointer underline">Clear</p>
                     </DialogDescription>
                 </DialogHeader>
                 <div class="grid grid-cols-2 gap-4 py-4">
@@ -359,16 +382,17 @@
 
 <script setup>
 import { useMembers } from '~/composables/useMembers';
+import { useForm, useField } from 'vee-validate';
 import * as yup from 'yup';
 const { members, addMember, fetchMembers, updateMember, deleteMember } = useMembers();
 const router = useRouter();
 
 // options for status field
 const statusTypes = ref(["Individual", "EAAZ(AA)", "SAAZ(AA)", "SWAAZ(AA)", "WAAZ(AA)", "NAAZ(AA)", "IMMIGRATION(AA)", "CAAZ(AA)", "NR(AXUM)", "NR(ADIGRAT)", "NR(SHIRE)", "NR(ADWA)", "SR(HAWASSA)", "SR(SHASHEMENE)", "SER(ZEWAY)", "SER(ADAMA)", "NER(KOMBOLCHA)", "NER(DESSIE)", "CNR(DIBRE BRIHAN)", "CNR(FICHE)", "CNR(SULULTA)", "NEER(SEMERA)", "NEER(AWASH)", "SSWR(SODO)", "SSWR(ARBAMINCH)"]);
-const logedInUserName = ref("");
-const logedInUserEmail = ref("");
 
 // login information of the hr
+const logedInUserName = ref("");
+const logedInUserEmail = ref("");
 if (process.client) {
     logedInUserName.value = localStorage.getItem('username')
     logedInUserEmail.value = localStorage.getItem('email')
@@ -407,7 +431,7 @@ const schema = yup.object({
 });
 
 //validation schema
-const { handleSubmit, errors, defineField } = useForm({
+const { handleSubmit, resetForm, errors, defineField } = useForm({
     validationSchema: schema,
 });
 
@@ -430,32 +454,56 @@ const fetchAndResetPage = async () => {
 };
 
 const searchQuery = ref(''); // inputed value in the search field
+const filterState = ref('all') // filter state (activated, deactivated, all)
 const currentPage = ref(1); // Current page number
 const pageSize = 4; // Members per page
 const filteredMembers = ref(members.value); // Store filtered members
+const searchedMebmers = ref(filteredMembers.value) // Store searched members
 
-// Paginate the filtered members
+// Paginate the filtered then searched members
 const paginatedMembers = computed(() => {
     const start = (currentPage.value - 1) * pageSize;
-    return filteredMembers.value.slice(start, start + pageSize);
+    return searchedMebmers.value.slice(start, start + pageSize);
 });
 
-// clear the filter if search input is empty
+// clear the search filter if search input is empty
 watch(searchQuery, (newValue) => {
   if (newValue.trim() === '') {
-    // If searchQuery is empty, reset the filteredMembers to the full members list
-    filteredMembers.value = members.value;
+    // If searchQuery is empty, reset the seached members to the full members list that are filtered
+    searchedMebmers.value = filteredMembers.value;
   }
 });
 
-// Update filtered members when search is triggered
+// Watch for filter state changes and apply it
+watch([members, filterState], () => {
+    handleDeactivateStateFilter();
+    searchQuery.value = '' // clear the search bar when filter is applied
+});
+
+// Function to apply deactivate state filter
+const handleDeactivateStateFilter = () => {
+    let result = members.value;
+
+    // Apply filter
+    if (filterState.value === 'active') {
+        result = result.filter(member => !member.deactivated);
+    } else if (filterState.value === 'deactivated') {
+        result = result.filter(member => member.deactivated);
+    }
+
+    filteredMembers.value = result;
+    searchedMebmers.value = filteredMembers.value
+    currentPage.value = 1; // Reset to first page when filtering
+};
+
+// Update searched members when search is triggered
 const handleSearch = () => {
-    // Filter members based on the search query
+    // search members based on the search query
     if (!searchQuery.value.trim()) {
-        filteredMembers.value = members.value; // If search is empty, show all members
+        searchedMebmers.value = filteredMembers.value; // If search is empty, show all members
     } else {
         const query = searchQuery.value.toLowerCase();
-        filteredMembers.value = members.value.filter(member =>
+        searchedMebmers.value = filteredMembers.value.filter(member =>
             member.name.toLowerCase().includes(query) ||
             member.email.toLowerCase().includes(query) ||
             member.position.toLowerCase().includes(query) ||
@@ -492,7 +540,6 @@ const handleFileUpload = (event, field, member = newMember.value) => {
 
 // Sync vee-validate fields with newMember
 const fields = { name, email, age, position, salary, surety, suretyDocument, educationalDocument, codeNumber, status };
-
 Object.entries(fields).forEach(([key, field]) => {
   watch(field, (newValue) => {
     newMember.value[key] = newValue;
@@ -500,7 +547,6 @@ Object.entries(fields).forEach(([key, field]) => {
 });
 
 // Function to add new members to the databse
-
 const handleAdd = handleSubmit(async () => {
     const response = await addMember(newMember.value);
 
@@ -509,12 +555,15 @@ const handleAdd = handleSubmit(async () => {
         // Display user-friendly error message
         alert("❗ Error: " + response.error);
     } else {
-        console.log("Success:", response);
+        console.log("Success:", response.member);
         alert("✅ Member: " + newMember.value.name + " added SUCCESSFULLY");
+        // Reset form fields
+        resetFields();
         await fetchAndResetPage();
         handleSearch(); // Re-apply search filter
+        filterState.value = 'all' // Reset filter state to all
 
-        // Reset form fields
+        // reset new members value
         newMember.value = {
             name: '',
             email: '',
@@ -530,6 +579,11 @@ const handleAdd = handleSubmit(async () => {
     }
 });
 
+// Reset function (local)
+const resetFields = () => {
+  resetForm(); // Resets all fields
+};
+
 //Function to delete a member
 const handleDelete = async (id) => {
     if (confirm('⚠️ Are you sure you want to remove this member? click OK to confirm.') == true) {
@@ -537,6 +591,7 @@ const handleDelete = async (id) => {
         alert("✅ Member removed SUCCESSFULLY");
         await fetchAndResetPage();
         handleSearch(); // Re-apply the search filter
+        filterState.value = 'all' // Reset filter state to all
     } else {
         alert("Member deletion process canceled ❌");
     }
@@ -549,6 +604,26 @@ const handleUpdate = async (selectedMember) => {
     alert('✅ Member: ' + selectedMember.name + ' updated SUCCESSFULLY!');
     await fetchAndResetPage();
     handleSearch(); // Re-apply the search filter
+    filterState.value = 'all' // Reset filter state to all
   }
+};
+
+// toggle the deactivated state of a member
+const toggleMemberState = async (member) => {
+  if (!member || !member._id) return;
+
+  const updatedStatus = !member.deactivated; // Toggle the status
+
+  await updateMember(member._id, { deactivated: updatedStatus });
+
+  alert(
+    `✅ Member: ${member.name} has been ${
+      updatedStatus ? "deactivated" : "activated"
+    } successfully!`
+  );
+
+  await fetchAndResetPage();
+  handleSearch(); // Re-apply the search filter
+  handleDeactivateStateFilter(); // Re-apply the deactivate state filter
 };
 </script>

@@ -37,6 +37,7 @@ export default defineEventHandler(async (event) => {
           educationalDocument: body.educationalDocument,
           status: body.status,
           codeNumber: body.codeNumber,
+          deactivated: body.deactivated,
         },
         { new: true }
       );

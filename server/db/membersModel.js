@@ -44,6 +44,10 @@ const membersSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  deactivated: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const Members = mongoose.models.Members || mongoose.model("Members", membersSchema);
