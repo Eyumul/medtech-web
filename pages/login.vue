@@ -19,8 +19,11 @@
                 <icon name="hugeicons:lock-password" class="size-6 text-gray-400 absolute left-2" />
             </div>
             <Button type="submit" class="bg-medcolor-blue hover:bg-medcolor-green w-full mt-2">
-                <span v-if="isSignUp">Sign up</span>
-                <span v-else>Login</span>
+                <span v-if="!isLoading">{{ isSignUp ? 'Sign up' : 'Login' }}</span>
+                <span v-else class="flex items-center gap-2">
+                    <icon name="line-md:loading-twotone-loop" class="size-4"/>
+                    <p>Loading...</p>
+                </span>
             </Button>
         </form>
         <div @click="isSignUp = !isSignUp; errorMessage = null; fullname = ''; email = ''; password = ''" class="w-[350px] mt-8 text-sm text-center underline text-medcolor-blue cursor-pointer">
@@ -39,6 +42,7 @@ const fullname = ref('')
 const email = ref('')
 const password = ref('')
 const isSignUp = ref(false)
+const isLoading = ref(false) // Loading indicator
 const client = useSupabaseClient()
 
 const errorMessage = ref(null)
@@ -68,6 +72,7 @@ const signUp = async () => {
 
 const login = async () => {
     errorMessage.value = null // Reset error message
+    isLoading.value = true; // Start loading
     const { data, error } = await client.auth.signInWithPassword({
         email: email.value,
         password: password.value,
@@ -76,6 +81,7 @@ const login = async () => {
     if (error) {
         console.error('Login Error:', error.message)
         errorMessage.value = error.message
+        isLoading.value = false; // Stop loading on error
     } else {
         console.log('Logged in successfully:', data.user.user_metadata.name) // Retrieve name
     }

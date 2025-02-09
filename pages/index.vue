@@ -56,7 +56,8 @@
          </div>
         <!-- table section -->
         <div class="px-[48px]">
-            <Table class="border-[1px]">
+            <Skeleton v-if="isLoadingMembers" class="bg-[#e1edf8] h-96 w-full" />
+            <Table v-else class="border-[1px]">
                 <TableCaption>A list of registered members.</TableCaption>
                 <TableHeader class="bg-white">
                     <TableRow>
@@ -389,7 +390,18 @@ const user = useSupabaseUser()
 definePageMeta({
     middleware: ['auth']
 })
+
+// declare the functions and consts from use member
 const { members, addMember, fetchMembers, updateMember, deleteMember } = useMembers();
+
+// script to show a loading UI while fetching members
+const isLoadingMembers = ref(true);
+
+// fetch members and show that loading is finished
+await fetchMembers();
+isLoadingMembers.value = false
+
+// store login information
 const logedInUser = ref({
     name: user.value.user_metadata.name,
     email: user.value.email
@@ -429,9 +441,6 @@ const newMember = ref({
     educationalDocument: '',
     codeNumber: ''
 });
-
-// fetch members data from database
-await fetchMembers();
 
 // validation setting
 // validation check function
@@ -577,7 +586,9 @@ const handleAdd = handleSubmit(async () => {
         alert("✅ Member: " + newMember.value.name + " added SUCCESSFULLY");
         // Reset form fields
         resetFields();
+        isLoadingMembers.value = true
         await fetchAndResetPage();
+        isLoadingMembers.value = false
         handleSearch(); // Re-apply search filter
         filterState.value = 'all' // Reset filter state to all
 
@@ -607,7 +618,9 @@ const handleDelete = async (id) => {
     if (confirm('⚠️ Are you sure you want to remove this member? click OK to confirm.') == true) {
         await deleteMember(id);
         alert("✅ Member removed SUCCESSFULLY");
+        isLoadingMembers.value = true
         await fetchAndResetPage();
+        isLoadingMembers.value = false
         handleSearch(); // Re-apply the search filter
         filterState.value = 'all' // Reset filter state to all
     } else {
@@ -620,7 +633,9 @@ const handleUpdate = async (selectedMember) => {
   if (selectedMember) {
     await updateMember(selectedMember._id, selectedMember);
     alert('✅ Member: ' + selectedMember.name + ' updated SUCCESSFULLY!');
+    isLoadingMembers.value = true
     await fetchAndResetPage();
+    isLoadingMembers.value = false
     handleSearch(); // Re-apply the search filter
     filterState.value = 'all' // Reset filter state to all
   }
@@ -640,7 +655,9 @@ const toggleMemberState = async (member) => {
     } successfully!`
   );
 
+  isLoadingMembers.value = true
   await fetchAndResetPage();
+  isLoadingMembers.value = false
   handleSearch(); // Re-apply the search filter
   handleDeactivateStateFilter(); // Re-apply the deactivate state filter
 };
