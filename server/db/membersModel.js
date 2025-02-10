@@ -48,6 +48,9 @@ const membersSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  profilePicture: {
+    type: String,
+  }
 });
 
 const Members = mongoose.models.Members || mongoose.model("Members", membersSchema);

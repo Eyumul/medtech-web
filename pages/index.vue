@@ -62,6 +62,7 @@
                 <TableHeader class="bg-white">
                     <TableRow>
                         <TableHead>ID</TableHead>
+                        <TableHead class="text-center">Profile Picture</TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>Age</TableHead>
@@ -79,6 +80,14 @@
                 <TableBody class="font-medium text-base">
                     <TableRow v-for="member of paginatedMembers" :key="member.id">
                         <TableCell>{{ member._id }}</TableCell>
+                        <TableCell class="flex justify-center">
+                            <div v-if="member.profilePicture">
+                                <img class="size-10 rounded-full object-cover" :src="member.profilePicture" :alt="member.name + 's pic'"/>
+                            </div>
+                            <div v-else>
+                                <icon class="text-medcolor-green size-10" name="material-symbols:account-circle-full"/>
+                            </div>
+                        </TableCell>
                         <TableCell class="text-medcolor-green font-bold">{{ member.name }}</TableCell>
                         <TableCell>{{ member.email }}</TableCell>
                         <TableCell>{{ member.age }}</TableCell>
@@ -122,6 +131,24 @@
                                                 </DialogDescription>
                                             </DialogHeader>
                                             <div class="grid grid-cols-2 gap-4 py-4">
+                                                <div class="grid grid-cols-4 items-center col-span-2 gap-4">
+                                                    <p class="text-right text-medcolor-green font-bold">Profile picture</p>
+                                                    <label for="profilePicture" class="relative w-24 h-24 rounded-full border-2 border-dashed border-medcolor-blue flex items-center justify-center cursor-pointer overflow-hidden">
+                                                        <!-- Show uploaded image if available -->
+                                                        <img v-if="member.profilePicture" :src="member.profilePicture" alt="Profile Picture" class="absolute w-full h-full object-cover rounded-full" />
+                                                        <!-- Add Image Icon (Displayed before upload) -->
+                                                        <div v-if="!member.profilePicture" class="flex flex-col items-center justify-center text-medcolor-blue">
+                                                            <icon name="uil:image-plus" class="w-8 h-8" />
+                                                            <p class="text-xs text-medcolor-blue">Add Image</p>
+                                                        </div>
+                                                        <!-- Edit Icon (Displayed after upload) -->
+                                                        <div v-if="member.profilePicture" class="absolute flex items-center justify-center size-7 bg-gray-700 bg-opacity-75 p-1 rounded-full">
+                                                            <icon name="uil:pen" class="text-white" />
+                                                        </div>
+                                                        <!-- Hidden File Input -->
+                                                        <input @change="handleFileUpload($event, 'profilePicture', member)" accept="image/*" type="file" id="profilePicture"  class="hidden"/>
+                                                    </label>
+                                                </div>
                                                 <div class="grid grid-cols-4 items-center gap-4">
                                                     <Label for="name" class="text-right text-medcolor-green font-bold">
                                                         Name
@@ -278,6 +305,24 @@
                     </DialogDescription>
                 </DialogHeader>
                 <div class="grid grid-cols-2 gap-4 py-4">
+                    <div class="grid grid-cols-4 items-center justify-self-start gap-4 col-span-2">
+                        <p class="text-right text-medcolor-green font-bold">Profile Picture</p>
+                        <label for="profilePicture" class="relative w-24 h-24 rounded-full border-2 border-dashed border-medcolor-blue flex items-center justify-center cursor-pointer overflow-hidden">
+                            <!-- Show uploaded image if available -->
+                            <img v-if="newMember.profilePicture" :src="newMember.profilePicture" alt="Profile Picture" class="absolute w-full h-full object-cover rounded-full" />
+                            <!-- Add Image Icon (Displayed before upload) -->
+                            <div v-if="!newMember.profilePicture" class="flex flex-col items-center justify-center text-medcolor-blue">
+                                <icon name="uil:image-plus" class="w-8 h-8" />
+                                <p class="text-xs text-medcolor-blue">Add Image</p>
+                            </div>
+                            <!-- Edit Icon (Displayed after upload) -->
+                            <div v-if="newMember.profilePicture" class="absolute flex items-center justify-center size-7 bg-gray-700 bg-opacity-75 p-1 rounded-full">
+                                <icon name="uil:pen" class="text-white" />
+                            </div>
+                            <!-- Hidden File Input -->
+                            <input @change="handleFileUpload($event, 'profilePicture')" accept="image/*" type="file" id="profilePicture"  class="hidden"/>
+                        </label>
+                    </div>
                     <div class="grid grid-cols-4 items-center gap-4">
                         <Label for="name" class="text-right text-medcolor-green font-bold">
                             Name
@@ -439,7 +484,8 @@ const newMember = ref({
     surety: '',
     suretyDocument: '',
     educationalDocument: '',
-    codeNumber: ''
+    codeNumber: '',
+    profilePicture: '',
 });
 
 // validation setting
@@ -455,6 +501,7 @@ const schema = yup.object({
     salary: yup.number().positive('Salary must be positive').required('Salary is required'),
     codeNumber: yup.string().required('Code Number is required'),
     status: yup.string().required('Status is required'),
+    profilePicture: yup.string().nullable(),
 });
 
 //validation schema
@@ -472,6 +519,7 @@ const [position, positionAttrs] = defineField('position');
 const [salary, salaryAttrs] = defineField('salary');
 const [codeNumber, codeNumberAttrs] = defineField('codeNumber');
 const [status, statusAttrs] = defineField('status');
+const [profilePicture, profilePictureAttrs] = defineField('profilePicture');
 
 // fetch member and reset pagination
 const fetchAndResetPage = async () => {
@@ -546,9 +594,9 @@ const handleSearch = () => {
 const handleFileUpload = (event, field, member = newMember.value) => {
     const file = event.target.files[0];
     if (field == 'suretyDocument'){
-        suretyDocument.value = event.target.files[0];
+        suretyDocument.value = file;
     } else if ( field == 'educationalDocument') {
-        educationalDocument.value = event.target.files[0];
+        educationalDocument.value = file;
     }
 
     if (file) {
@@ -566,7 +614,7 @@ const handleFileUpload = (event, field, member = newMember.value) => {
 };
 
 // Sync vee-validate fields with newMember
-const fields = { name, email, age, position, salary, surety, suretyDocument, educationalDocument, codeNumber, status };
+const fields = { name, email, age, position, salary, surety, suretyDocument, educationalDocument, codeNumber, status, profilePicture };
 Object.entries(fields).forEach(([key, field]) => {
   watch(field, (newValue) => {
     newMember.value[key] = newValue;
@@ -594,6 +642,17 @@ const handleAdd = handleSubmit(async () => {
 
         // reset new members value
         newMember.value = {
+            suretyDocument: '',
+            educationalDocument: '',
+            profilePicture: '',
+        };
+    }
+});
+
+// Reset function (local)
+const resetFields = () => {
+    // reset new members value
+    newMember.value = {
             name: '',
             email: '',
             age: 0,
@@ -603,14 +662,10 @@ const handleAdd = handleSubmit(async () => {
             surety: '',
             suretyDocument: '',
             educationalDocument: '',
-            codeNumber: ''
-        };
-    }
-});
-
-// Reset function (local)
-const resetFields = () => {
-  resetForm(); // Resets all fields
+            codeNumber: '',
+            profilePicture: '',
+    };
+    resetForm(); // Resets all fields
 };
 
 //Function to delete a member
