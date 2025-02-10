@@ -709,11 +709,11 @@ const handleAdd = handleSubmit(async () => {
         // Display user-friendly error message
         alert("❗ Error: " + response.error);
     } else {
-        isLoadingMembers.value = true
         console.log("Success:", response.member);
         alert("✅ Member: " + newMember.value.name + " added SUCCESSFULLY");
         // Reset form fields
         resetFields();
+        isLoadingMembers.value = true
         await fetchAndResetPage();
         isLoadingMembers.value = false
         handleSearch(); // Re-apply search filter
@@ -751,8 +751,8 @@ const resetFields = () => {
 const handleDelete = async (id) => {
     if (confirm('⚠️ Are you sure you want to remove this member? click OK to confirm.') == true) {
         await deleteMember(id);
-        isLoadingMembers.value = true
         alert("✅ Member removed SUCCESSFULLY");
+        isLoadingMembers.value = true
         await fetchAndResetPage();
         isLoadingMembers.value = false
         handleSearch(); // Re-apply the search filter
@@ -766,8 +766,8 @@ const handleDelete = async (id) => {
 const handleUpdate = async (selectedMember) => {
   if (selectedMember) {
     await updateMember(selectedMember._id, selectedMember);
-    isLoadingMembers.value = true
     alert('✅ Member: ' + selectedMember.name + ' updated SUCCESSFULLY!');
+    isLoadingMembers.value = true
     await fetchAndResetPage();
     isLoadingMembers.value = false
     handleSearch(); // Re-apply the search filter
