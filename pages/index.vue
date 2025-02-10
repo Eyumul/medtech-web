@@ -34,29 +34,29 @@
         <!-- header section -->
          <div class="flex justify-between px-[48px]">
             <p class="text-4xl font-black text-medcolor-blue">Members Managment</p>
-            <RadioGroup v-model="filterState" class="flex gap-6 mt-2 mr-[450px]" default-value="all">
-                <div class="flex items-center space-x-2">
-                    <RadioGroupItem class="size-5 hover:text-medcolor-green hover:border-medcolor-green text-medcolor-blue border-medcolor-blue" id="r1" value="all" />
-                    <Label class="text-base text-medcolor-green font-bold" for="r1">All</Label>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <RadioGroupItem class="size-5 hover:text-medcolor-green hover:border-medcolor-green text-medcolor-blue border-medcolor-blue" id="r2" value="active" />
-                    <Label class="text-base text-medcolor-green font-bold" for="r2">Active</Label>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <RadioGroupItem class="size-5 hover:text-medcolor-green hover:border-medcolor-green text-medcolor-blue border-medcolor-blue" id="r3" value="deactivated" />
-                    <Label class="text-base text-medcolor-green font-bold" for="r3">Deactivated</Label>
-                </div>
-            </RadioGroup>
             <div class="flex relative gap-1.5 items-center w-full max-w-lg h-12">
                 <Input type="text" v-model="searchQuery" placeholder="Search by name, email, position, ..." class="pl-12 h-full" />
                 <icon name="uil:search" class="absolute left-2 size-6 text-gray-300 ring-2 ring-red-500"/>
                 <Button @click="handleSearch" type="submit" class="bg-medcolor-blue hover:bg-medcolor-green h-full px-12">Search</Button>
             </div>
          </div>
+         <RadioGroup v-model="filterState" class="flex px-[48px] gap-6 -my-3" default-value="all">
+            <div class="flex items-center space-x-2">
+                <RadioGroupItem class="size-5 hover:text-medcolor-green hover:border-medcolor-green text-medcolor-blue border-medcolor-blue" id="r1" value="all" />
+                <Label class="text-base text-medcolor-green font-bold" for="r1">All</Label>
+            </div>
+            <div class="flex items-center space-x-2">
+                <RadioGroupItem class="size-5 hover:text-medcolor-green hover:border-medcolor-green text-medcolor-blue border-medcolor-blue" id="r2" value="active" />
+                <Label class="text-base text-medcolor-green font-bold" for="r2">Active</Label>
+            </div>
+            <div class="flex items-center space-x-2">
+                <RadioGroupItem class="size-5 hover:text-medcolor-green hover:border-medcolor-green text-medcolor-blue border-medcolor-blue" id="r3" value="deactivated" />
+                <Label class="text-base text-medcolor-green font-bold" for="r3">Deactivated</Label>
+            </div>
+        </RadioGroup>
         <!-- table section -->
         <div class="px-[48px]">
-            <Skeleton v-if="isLoadingMembers" class="bg-[#e1edf8] h-96 w-full" />
+            <Skeleton v-if="isLoadingMembers" class="bg-gray-300 h-96 w-full" />
             <Table v-else class="border-[1px]">
                 <TableCaption>A list of registered members.</TableCaption>
                 <TableHeader class="bg-white">
@@ -78,192 +78,262 @@
                     </TableRow>
                 </TableHeader>
                 <TableBody class="font-medium text-base">
-                    <TableRow v-for="member of paginatedMembers" :key="member.id">
-                        <TableCell>{{ member._id }}</TableCell>
-                        <TableCell class="flex justify-center">
-                            <div v-if="member.profilePicture">
-                                <img class="size-10 rounded-full object-cover" :src="member.profilePicture" :alt="member.name + 's pic'"/>
-                            </div>
-                            <div v-else>
-                                <icon class="text-medcolor-green size-10" name="material-symbols:account-circle-full"/>
-                            </div>
-                        </TableCell>
-                        <TableCell class="text-medcolor-green font-bold">{{ member.name }}</TableCell>
-                        <TableCell>{{ member.email }}</TableCell>
-                        <TableCell>{{ member.age }}</TableCell>
-                        <TableCell>{{ member.salary }}</TableCell>
-                        <TableCell>{{ member.position }}</TableCell>
-                        <TableCell>{{ member.surety }}</TableCell>
-                        <TableCell class="text-center">
-                            <a v-if="member.suretyDocument" :href="member.suretyDocument" target="_blank">
-                                <icon name="uil:file-alt" class="text-xl"/>
-                            </a>
-                        </TableCell>
-                        <TableCell class="text-center">
-                            <a v-if="member.educationalDocument" :href="member.educationalDocument" target="_blank">
-                                <icon name="uil:file-alt" class="text-xl"/>
-                            </a>
-                        </TableCell>
-
-                        <TableCell>{{ member.codeNumber }}</TableCell>
-                        <TableCell>{{ member.status }}</TableCell>
-                        <TableCell :class="member.deactivated ? 'text-red-600':'text-green-500'">{{ member.deactivated ? 'Deactivated' : 'Active' }}</TableCell>
-                        <TableCell class="flex justify-center">
-                            <DropdownMenu class="relative">
-                                <DropdownMenuTrigger>
-                                    <icon name="tabler:dots-vertical"/>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent class="absolute -right-5">
-                                    <!-- <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                                    <DropdownMenuSeparator /> -->
-                                    <Dialog>
-                                        <DialogTrigger as-child>
-                                            <DropdownMenuItem class="text-medcolor-blue font-medium" @select.prevent>
-                                                <icon name="uil:edit" />
-                                                <span class="ml-2">Edit</span>
+                    <Dialog v-for="member of paginatedMembers" :key="member.id">
+                        <DialogTrigger as-child>
+                            <TableRow class="hover:bg-[#e1edf8] cursor-pointer">
+                                <TableCell>{{ member._id }}</TableCell>
+                                <TableCell class="flex justify-center">
+                                    <div v-if="member.profilePicture">
+                                        <img class="size-10 rounded-full object-cover" :src="member.profilePicture" :alt="member.name + 's pic'"/>
+                                    </div>
+                                    <div v-else>
+                                        <icon class="text-medcolor-green size-10" name="material-symbols:account-circle-full"/>
+                                    </div>
+                                </TableCell>
+                                <TableCell class="text-medcolor-green font-bold">{{ member.name }}</TableCell>
+                                <TableCell>{{ member.email }}</TableCell>
+                                <TableCell>{{ member.age }}</TableCell>
+                                <TableCell>{{ member.salary }}</TableCell>
+                                <TableCell>{{ member.position }}</TableCell>
+                                <TableCell>{{ member.surety }}</TableCell>
+                                <TableCell class="text-center">
+                                    <a v-if="member.suretyDocument" :href="member.suretyDocument" target="_blank">
+                                        <icon name="uil:file-alt" class="text-xl"/>
+                                    </a>
+                                </TableCell>
+                                <TableCell class="text-center">
+                                    <a v-if="member.educationalDocument" :href="member.educationalDocument" target="_blank">
+                                        <icon name="uil:file-alt" class="text-xl"/>
+                                    </a>
+                                </TableCell>
+        
+                                <TableCell>{{ member.codeNumber }}</TableCell>
+                                <TableCell>{{ member.status }}</TableCell>
+                                <TableCell :class="member.deactivated ? 'text-red-600':'text-green-500'">{{ member.deactivated ? 'Deactivated' : 'Active' }}</TableCell>
+                                <TableCell class="">
+                                    <DropdownMenu class="relative">
+                                        <DropdownMenuTrigger as-child>
+                                            <button @click="openDropdown" class="text-xl py-2 w-full">
+                                                <icon name="tabler:dots-vertical"/>
+                                            </button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent class="absolute -right-5">
+                                            <!-- <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                            <DropdownMenuSeparator /> -->
+                                            <Dialog>
+                                                <DialogTrigger as-child>
+                                                    <DropdownMenuItem class="text-medcolor-blue cursor-pointer font-medium" @select.prevent>
+                                                        <icon name="uil:edit" />
+                                                        <span class="ml-2">Edit</span>
+                                                    </DropdownMenuItem>
+                                                </DialogTrigger>
+                                                <DialogContent class="sm:max-w-[800px]">
+                                                    <DialogHeader>
+                                                        <DialogTitle class="text-3xl text-medcolor-blue font-bold">Edit member</DialogTitle>
+                                                        <DialogDescription>
+                                                            Make sure edit what you want before you submit
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+                                                    <div class="grid grid-cols-2 gap-4 py-4">
+                                                        <div class="grid grid-cols-4 items-center justify-self-start gap-4 col-span-2">
+                                                            <p class="text-right text-medcolor-green font-bold">Profile picture</p>
+                                                            <label for="profilePicture" class="relative w-24 h-24 rounded-full border-2 border-dashed border-medcolor-blue flex items-center justify-center col-span-3 cursor-pointer overflow-hidden">
+                                                                <!-- Show uploaded image if available -->
+                                                                <img v-if="member.profilePicture" :src="member.profilePicture" alt="Profile Picture" class="absolute w-full h-full object-cover rounded-full" />
+                                                                <!-- Add Image Icon (Displayed before upload) -->
+                                                                <div v-if="!member.profilePicture" class="flex flex-col items-center justify-center text-medcolor-blue">
+                                                                    <icon name="uil:image-plus" class="w-8 h-8" />
+                                                                    <p class="text-xs text-medcolor-blue">Add Image</p>
+                                                                </div>
+                                                                <!-- Edit Icon (Displayed after upload) -->
+                                                                <div v-if="member.profilePicture" class="absolute flex items-center justify-center size-7 bg-gray-700 bg-opacity-75 p-1 rounded-full">
+                                                                    <icon name="uil:pen" class="text-white" />
+                                                                </div>
+                                                                <!-- Hidden File Input -->
+                                                                <input @change="handleFileUpload($event, 'profilePicture', member)" accept="image/*" type="file" id="profilePicture"  class="hidden"/>
+                                                            </label>
+                                                        </div>
+                                                        <div class="grid grid-cols-4 items-center gap-4">
+                                                            <Label for="name" class="text-right text-medcolor-green font-bold">
+                                                                Name
+                                                            </Label>
+                                                            <Input type="text" v-model="member.name" placeholder="alex simpson" id="name" class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                                                        </div>
+                                                        <div class="grid grid-cols-4 items-center gap-4">
+                                                            <Label for="email" class="text-right text-medcolor-green font-bold">
+                                                                Email
+                                                            </Label>
+                                                            <Input type="text" v-model="member.email" placeholder="alex@example.com" id="email"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                                                        </div>
+                                                        <div class="grid grid-cols-4 items-center gap-4">
+                                                            <Label for="age" class="text-right text-medcolor-green font-bold">
+                                                                Age
+                                                            </Label>
+                                                            <Input type="number" v-model="member.age" placeholder="30" id="age"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                                                        </div>
+                                                        <div class="grid grid-cols-4 items-center gap-4">
+                                                            <Label for="salary" class="text-right text-medcolor-green font-bold">
+                                                                Salary
+                                                            </Label>
+                                                            <Input type="number" v-model="member.salary" placeholder="200000" id="salary"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                                                        </div>
+                                                        <div class="grid grid-cols-4 items-center gap-4">
+                                                            <Label for="position" class="text-right text-medcolor-green font-bold">
+                                                                Position
+                                                            </Label>
+                                                            <Input type="text" v-model="member.position" placeholder="accountant" id="position"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                                                        </div>
+                                                        <div class="grid grid-cols-4 items-center gap-4">
+                                                            <Label for="surety" class="text-right text-medcolor-green font-bold">
+                                                                Surety
+                                                            </Label>
+                                                            <Input type="text" v-model="member.surety" placeholder="Jhon" id="surety"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                                                        </div>
+                                                        <div class="grid grid-cols-4 items-center gap-4">
+                                                            <Label for="suretyDocument" class="text-right text-medcolor-green font-bold">
+                                                                Surety Document
+                                                            </Label>
+                                                            <Input type="file" @change="handleFileUpload($event, 'suretyDocument', member)"  id="suretyDocument" accept=".pdf" required  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                                                        </div>
+                                                        <div class="grid grid-cols-4 items-center gap-4">
+                                                            <Label for="educationalDocument" class="text-right text-medcolor-green font-bold">
+                                                                Educational Document
+                                                            </Label>
+                                                            <Input type="file" @change="handleFileUpload($event, 'educationalDocument', member)" id="educationalDocument" accept=".pdf" required  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                                                        </div>
+                                                        <div class="grid grid-cols-4 items-center gap-4">
+                                                            <p class="text-right text-medcolor-green font-bold text-sm">
+                                                                Current Surety Document
+                                                            </p>
+                                                            <a v-if="member.suretyDocument" :href="member.suretyDocument" target="_blank">
+                                                                <icon name="uil:file-alt" class="text-xl"/>
+                                                            </a>
+                                                        </div>
+                                                        <div class="grid grid-cols-4 items-center gap-4">
+                                                            <p class="text-right text-medcolor-green font-bold text-sm">
+                                                                Current Educational Document
+                                                            </p>
+                                                            <a v-if="member.educationalDocument" :href="member.educationalDocument" target="_blank">
+                                                                <icon name="uil:file-alt" class="text-xl"/>
+                                                            </a>
+                                                        </div>
+                                                        <div class="grid grid-cols-4 items-center gap-4">
+                                                            <Label for="codeNumber" class="text-right text-medcolor-green font-bold">
+                                                                Code Number
+                                                            </Label>
+                                                            <Input type="text" v-model="member.codeNumber" placeholder="we238alex" id="codeNumber"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
+                                                        </div>
+                                                        <div class="grid grid-cols-4 items-center gap-4">
+                                                            <Label for="status" class="text-right text-medcolor-green font-bold">
+                                                                Status
+                                                            </Label>
+                                                            <Select v-model="member.status" class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3">
+                                                                <SelectTrigger class="w-[180px]">
+                                                                <SelectValue placeholder="Status" />
+                                                                </SelectTrigger>
+                                                                <SelectContent class="h-[240px]">
+                                                                    <SelectGroup>
+                                                                        <SelectLabel>--- Status ---</SelectLabel>
+                                                                        <SelectItem v-for="status of statusTypes" :key="status" :value="status">
+                                                                            {{status}}
+                                                                        </SelectItem>
+                                                                    </SelectGroup>
+                                                                </SelectContent>
+                                                            </Select>
+                                                        </div>
+                                                    </div>
+                                                    <DialogFooter>
+                                                        <DialogClose as-child>
+                                                            <Button type="button" variant="outline" class="border-medcolor-blue px-12 text-medcolor-blue hover:border-medcolor-green hover:text-medcolor-green hover:bg-transparent">
+                                                                Cancel
+                                                            </Button>
+                                                        </DialogClose>
+                                                        <Button @click="handleUpdate(member)" type="submit" class="bg-medcolor-blue px-12 hover:bg-medcolor-green">
+                                                            Save
+                                                        </Button>
+                                                    </DialogFooter>
+                                                </DialogContent>
+                                            </Dialog>
+                                            <DropdownMenuItem @click="toggleMemberState(member)" class="text-medcolor-blue cursor-pointer font-medium">
+                                                <icon v-if="member.deactivated" name="uil:play" />
+                                                <span v-if="member.deactivated" class="ml-2">Activate</span>
+                                                <icon v-if="!member.deactivated" name="uil:pause" />
+                                                <span v-if="!member.deactivated" class="ml-2">Deactivate</span>
                                             </DropdownMenuItem>
-                                        </DialogTrigger>
-                                        <DialogContent class="sm:max-w-[800px]">
-                                            <DialogHeader>
-                                                <DialogTitle class="text-3xl text-medcolor-blue font-bold">Edit member</DialogTitle>
-                                                <DialogDescription>
-                                                    Make sure edit what you want before you submit
-                                                </DialogDescription>
-                                            </DialogHeader>
-                                            <div class="grid grid-cols-2 gap-4 py-4">
-                                                <div class="grid grid-cols-4 items-center col-span-2 gap-4">
-                                                    <p class="text-right text-medcolor-green font-bold">Profile picture</p>
-                                                    <label for="profilePicture" class="relative w-24 h-24 rounded-full border-2 border-dashed border-medcolor-blue flex items-center justify-center cursor-pointer overflow-hidden">
-                                                        <!-- Show uploaded image if available -->
-                                                        <img v-if="member.profilePicture" :src="member.profilePicture" alt="Profile Picture" class="absolute w-full h-full object-cover rounded-full" />
-                                                        <!-- Add Image Icon (Displayed before upload) -->
-                                                        <div v-if="!member.profilePicture" class="flex flex-col items-center justify-center text-medcolor-blue">
-                                                            <icon name="uil:image-plus" class="w-8 h-8" />
-                                                            <p class="text-xs text-medcolor-blue">Add Image</p>
-                                                        </div>
-                                                        <!-- Edit Icon (Displayed after upload) -->
-                                                        <div v-if="member.profilePicture" class="absolute flex items-center justify-center size-7 bg-gray-700 bg-opacity-75 p-1 rounded-full">
-                                                            <icon name="uil:pen" class="text-white" />
-                                                        </div>
-                                                        <!-- Hidden File Input -->
-                                                        <input @change="handleFileUpload($event, 'profilePicture', member)" accept="image/*" type="file" id="profilePicture"  class="hidden"/>
-                                                    </label>
-                                                </div>
-                                                <div class="grid grid-cols-4 items-center gap-4">
-                                                    <Label for="name" class="text-right text-medcolor-green font-bold">
-                                                        Name
-                                                    </Label>
-                                                    <Input type="text" v-model="member.name" placeholder="alex simpson" id="name" class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
-                                                </div>
-                                                <div class="grid grid-cols-4 items-center gap-4">
-                                                    <Label for="email" class="text-right text-medcolor-green font-bold">
-                                                        Email
-                                                    </Label>
-                                                    <Input type="text" v-model="member.email" placeholder="alex@example.com" id="email"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
-                                                </div>
-                                                <div class="grid grid-cols-4 items-center gap-4">
-                                                    <Label for="age" class="text-right text-medcolor-green font-bold">
-                                                        Age
-                                                    </Label>
-                                                    <Input type="number" v-model="member.age" placeholder="30" id="age"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
-                                                </div>
-                                                <div class="grid grid-cols-4 items-center gap-4">
-                                                    <Label for="salary" class="text-right text-medcolor-green font-bold">
-                                                        Salary
-                                                    </Label>
-                                                    <Input type="number" v-model="member.salary" placeholder="200000" id="salary"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
-                                                </div>
-                                                <div class="grid grid-cols-4 items-center gap-4">
-                                                    <Label for="position" class="text-right text-medcolor-green font-bold">
-                                                        Position
-                                                    </Label>
-                                                    <Input type="text" v-model="member.position" placeholder="accountant" id="position"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
-                                                </div>
-                                                <div class="grid grid-cols-4 items-center gap-4">
-                                                    <Label for="surety" class="text-right text-medcolor-green font-bold">
-                                                        Surety
-                                                    </Label>
-                                                    <Input type="text" v-model="member.surety" placeholder="Jhon" id="surety"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
-                                                </div>
-                                                <div class="grid grid-cols-4 items-center gap-4">
-                                                    <Label for="suretyDocument" class="text-right text-medcolor-green font-bold">
-                                                        Surety Document
-                                                    </Label>
-                                                    <Input type="file" @change="handleFileUpload($event, 'suretyDocument', member)"  id="suretyDocument" accept=".pdf" required  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
-                                                </div>
-                                                <div class="grid grid-cols-4 items-center gap-4">
-                                                    <Label for="educationalDocument" class="text-right text-medcolor-green font-bold">
-                                                        Educational Document
-                                                    </Label>
-                                                    <Input type="file" @change="handleFileUpload($event, 'educationalDocument', member)" id="educationalDocument" accept=".pdf" required  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
-                                                </div>
-                                                <div class="grid grid-cols-4 items-center gap-4">
-                                                    <p class="text-right text-medcolor-green font-bold text-sm">
-                                                        Current Surety Document
-                                                    </p>
-                                                    <a v-if="member.suretyDocument" :href="member.suretyDocument" target="_blank">
-                                                        <icon name="uil:file-alt" class="text-xl"/>
-                                                    </a>
-                                                </div>
-                                                <div class="grid grid-cols-4 items-center gap-4">
-                                                    <p class="text-right text-medcolor-green font-bold text-sm">
-                                                        Current Educational Document
-                                                    </p>
-                                                    <a v-if="member.educationalDocument" :href="member.educationalDocument" target="_blank">
-                                                        <icon name="uil:file-alt" class="text-xl"/>
-                                                    </a>
-                                                </div>
-                                                <div class="grid grid-cols-4 items-center gap-4">
-                                                    <Label for="codeNumber" class="text-right text-medcolor-green font-bold">
-                                                        Code Number
-                                                    </Label>
-                                                    <Input type="text" v-model="member.codeNumber" placeholder="we238alex" id="codeNumber"  class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3" />
-                                                </div>
-                                                <div class="grid grid-cols-4 items-center gap-4">
-                                                    <Label for="status" class="text-right text-medcolor-green font-bold">
-                                                        Status
-                                                    </Label>
-                                                    <Select v-model="member.status" class="text-black font-medium placeholder:text-gray-400 placeholder:font-light col-span-3">
-                                                        <SelectTrigger class="w-[180px]">
-                                                        <SelectValue placeholder="Status" />
-                                                        </SelectTrigger>
-                                                        <SelectContent class="h-[240px]">
-                                                            <SelectGroup>
-                                                                <SelectLabel>--- Status ---</SelectLabel>
-                                                                <SelectItem v-for="status of statusTypes" :key="status" :value="status">
-                                                                    {{status}}
-                                                                </SelectItem>
-                                                            </SelectGroup>
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
-                                            </div>
-                                            <DialogFooter>
-                                                <DialogClose as-child>
-                                                    <Button type="button" variant="outline" class="border-medcolor-blue px-12 text-medcolor-blue hover:border-medcolor-green hover:text-medcolor-green hover:bg-transparent">
-                                                        Cancel
-                                                    </Button>
-                                                </DialogClose>
-                                                <Button @click="handleUpdate(member)" type="submit" class="bg-medcolor-blue px-12 hover:bg-medcolor-green">
-                                                    Save
-                                                </Button>
-                                            </DialogFooter>
-                                        </DialogContent>
-                                    </Dialog>
-                                    <DropdownMenuItem @click="toggleMemberState(member)" class="text-medcolor-blue font-medium">
-                                        <icon v-if="member.deactivated" name="uil:play" />
-                                        <span v-if="member.deactivated" class="ml-2">Activate</span>
-                                        <icon v-if="!member.deactivated" name="uil:pause" />
-                                        <span v-if="!member.deactivated" class="ml-2">Deactivate</span>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem @click="handleDelete(member._id)" class="text-red-500 font-medium">
-                                        <icon name="uil:trash-alt" />
-                                        <span class="ml-2">Delete</span>
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </TableCell>
-                    </TableRow>
+                                            <DropdownMenuItem @click="handleDelete(member._id)" class="text-red-500 cursor-pointer font-medium">
+                                                <icon name="uil:trash-alt" />
+                                                <span class="ml-2">Delete</span>
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </TableCell>
+                            </TableRow>
+                        </DialogTrigger>
+                        <DialogContent class="sm:max-w-[700px]">
+                            <DialogHeader>
+                                <DialogTitle class="text-3xl text-medcolor-blue font-bold">Member Information</DialogTitle>
+                                <DialogDescription class="flex justify-between">
+                                    <p>The following is full information of a regisered member</p>
+                                </DialogDescription>
+                            </DialogHeader>
+                            <!-- clicked member information -->
+                            <div class="grid grid-cols-2 gap-y-6 gap-x-0 py-4">
+                                <img v-if="member.profilePicture" class="size-24 mb-4 justify-self-center rounded-full object-cover col-span-2" :src="member.profilePicture" :alt="member.name + 's picture'" />
+                                <icon v-else name="material-symbols:account-circle-full" class="text-medcolor-green size-24 justify-self-center col-span-2 mb-4"/>
+                                <div class="flex items-center gap-4">
+                                    <p class="text-medcolor-blue font-bold">Name: </p>
+                                    <p class="text-medcolor-green font-semibold text-lg">{{ member.name }}</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <p class="text-medcolor-blue font-bold">Email: </p>
+                                    <p class="text-medcolor-green font-semibold text-lg">{{ member.email }}</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <p class="text-medcolor-blue font-bold">Age: </p>
+                                    <p class="text-medcolor-green font-semibold text-lg">{{ member.age }}</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <p class="text-medcolor-blue font-bold">Salary: </p>
+                                    <p class="text-medcolor-green font-semibold text-lg">{{ member.salary }}</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <p class="text-medcolor-blue font-bold">Position: </p>
+                                    <p class="text-medcolor-green font-semibold text-lg">{{ member.position }}</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <p class="text-medcolor-blue font-bold">Surety: </p>
+                                    <p class="text-medcolor-green font-semibold text-lg">{{ member.surety }}</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <p class="text-medcolor-blue font-bold">Surety Document: </p>
+                                    <a v-if="member.suretyDocument" :href="member.suretyDocument" target="_blank"><icon name="uil:file-alt" class="text-xl"/></a>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <p class="text-medcolor-blue font-bold">Educational Document: </p>
+                                    <a v-if="member.educationalDocument" :href="member.educationalDocument" target="_blank"><icon name="uil:file-alt" class="text-xl"/></a>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <p class="text-medcolor-blue font-bold">Code Number: </p>
+                                    <p class="text-medcolor-green font-semibold text-lg">{{ member.codeNumber }}</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <p class="text-medcolor-blue font-bold">Status: </p>
+                                    <p class="text-medcolor-green font-semibold text-lg">{{ member.status }}</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <p class="text-medcolor-blue font-bold">State: </p>
+                                    <p class="font-semibold text-lg" :class="member.deactivated ? 'text-red-500' : 'text-green-500'">{{ member.deactivated ? 'Deactivated' : 'Active' }}</p>
+                                </div>
+                            </div>
+                            <DialogFooter>
+                                <DialogClose as-child>
+                                    <Button type="button" class="bg-medcolor-blue px-12 hover:bg-medcolor-green">
+                                        Close
+                                    </Button>
+                                </DialogClose>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
                 </TableBody>
             </Table>
         </div>
@@ -307,7 +377,7 @@
                 <div class="grid grid-cols-2 gap-4 py-4">
                     <div class="grid grid-cols-4 items-center justify-self-start gap-4 col-span-2">
                         <p class="text-right text-medcolor-green font-bold">Profile Picture</p>
-                        <label for="profilePicture" class="relative w-24 h-24 rounded-full border-2 border-dashed border-medcolor-blue flex items-center justify-center cursor-pointer overflow-hidden">
+                        <label for="profilePicture" class="relative w-24 h-24 rounded-full border-2 border-dashed border-medcolor-blue flex items-center justify-center col-span-3 cursor-pointer overflow-hidden">
                             <!-- Show uploaded image if available -->
                             <img v-if="newMember.profilePicture" :src="newMember.profilePicture" alt="Profile Picture" class="absolute w-full h-full object-cover rounded-full" />
                             <!-- Add Image Icon (Displayed before upload) -->
@@ -430,6 +500,15 @@
 import { useMembers } from '~/composables/useMembers';
 import { useForm, useField } from 'vee-validate';
 import * as yup from 'yup';
+
+// drop down ref
+const activeDropdown = ref(null);
+const openDropdown = (event) => {
+    event.stopPropagation(); // Ensure dropdown click does not propagate
+    activeDropdown.value = true; // Set dropdown as active
+};
+
+// fetch user(hr) data
 const client = useSupabaseClient()
 const user = useSupabaseUser()
 definePageMeta({
@@ -630,11 +709,11 @@ const handleAdd = handleSubmit(async () => {
         // Display user-friendly error message
         alert("❗ Error: " + response.error);
     } else {
+        isLoadingMembers.value = true
         console.log("Success:", response.member);
         alert("✅ Member: " + newMember.value.name + " added SUCCESSFULLY");
         // Reset form fields
         resetFields();
-        isLoadingMembers.value = true
         await fetchAndResetPage();
         isLoadingMembers.value = false
         handleSearch(); // Re-apply search filter
@@ -672,8 +751,8 @@ const resetFields = () => {
 const handleDelete = async (id) => {
     if (confirm('⚠️ Are you sure you want to remove this member? click OK to confirm.') == true) {
         await deleteMember(id);
-        alert("✅ Member removed SUCCESSFULLY");
         isLoadingMembers.value = true
+        alert("✅ Member removed SUCCESSFULLY");
         await fetchAndResetPage();
         isLoadingMembers.value = false
         handleSearch(); // Re-apply the search filter
@@ -687,8 +766,8 @@ const handleDelete = async (id) => {
 const handleUpdate = async (selectedMember) => {
   if (selectedMember) {
     await updateMember(selectedMember._id, selectedMember);
-    alert('✅ Member: ' + selectedMember.name + ' updated SUCCESSFULLY!');
     isLoadingMembers.value = true
+    alert('✅ Member: ' + selectedMember.name + ' updated SUCCESSFULLY!');
     await fetchAndResetPage();
     isLoadingMembers.value = false
     handleSearch(); // Re-apply the search filter
