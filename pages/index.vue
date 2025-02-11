@@ -719,6 +719,7 @@ const handleAdd = handleSubmit(async () => {
         console.error("Failed to add member:", response.error);
         // Display user-friendly error message
         alert("❗ Error: " + response.error);
+        resetForm();
         isSubmitting.value = false;
     } else {
         console.log("Success:", response.member);
