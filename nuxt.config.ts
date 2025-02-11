@@ -18,5 +18,11 @@ export default defineNuxtConfig({
      * @default "./components/ui"
      */
     componentDir: './components/ui'
+  },
+  devServer: {
+    maxPayload: 50 * 1024 * 1024, // 50MB for local development
+  },
+  server: {
+    maxPayload: 50 * 1024 * 1024, // 50MB for production (Nitro server)
   }
 })

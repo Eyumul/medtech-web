@@ -249,7 +249,11 @@
                                                             </Button>
                                                         </DialogClose>
                                                         <Button @click="handleUpdate(member)" type="submit" class="bg-medcolor-blue px-12 hover:bg-medcolor-green">
-                                                            Save
+                                                            <span v-if="!isSaving">Save</span>
+                                                            <span v-else class="flex items-center gap-2">
+                                                                <icon name="line-md:loading-twotone-loop" class="size-4"/>
+                                                                <p>Saving...</p>
+                                                            </span>
                                                         </Button>
                                                     </DialogFooter>
                                                 </DialogContent>
@@ -488,7 +492,11 @@
                         </Button>
                     </DialogClose>
                     <Button type="submit" @click="handleAdd" class="bg-medcolor-blue px-12 hover:bg-medcolor-green">
-                        Submit
+                        <span v-if="!isSubmitting">Submit</span>
+                        <span v-else class="flex items-center gap-2">
+                            <icon name="line-md:loading-twotone-loop" class="size-4"/>
+                            <p>Submitting...</p>
+                        </span>
                     </Button>
                 </DialogFooter>
             </DialogContent>
@@ -518,8 +526,10 @@ definePageMeta({
 // declare the functions and consts from use member
 const { members, addMember, fetchMembers, updateMember, deleteMember } = useMembers();
 
-// script to show a loading UI while fetching members
+// script to show a loading UI while fetching members, adding members and editing member data
 const isLoadingMembers = ref(true);
+const isSubmitting = ref(false);
+const isSaving = ref(false);
 
 // fetch members and show that loading is finished
 await fetchMembers();
@@ -702,15 +712,18 @@ Object.entries(fields).forEach(([key, field]) => {
 
 // Function to add new members to the databse
 const handleAdd = handleSubmit(async () => {
+    isSubmitting.value = true;
     const response = await addMember(newMember.value);
 
     if (response?.error) {
         console.error("Failed to add member:", response.error);
         // Display user-friendly error message
         alert("❗ Error: " + response.error);
+        isSubmitting.value = false;
     } else {
         console.log("Success:", response.member);
         alert("✅ Member: " + newMember.value.name + " added SUCCESSFULLY");
+        isSubmitting.value = false;
         // Reset form fields
         resetFields();
         isLoadingMembers.value = true
@@ -764,15 +777,17 @@ const handleDelete = async (id) => {
 
 // Function to update a member's information
 const handleUpdate = async (selectedMember) => {
-  if (selectedMember) {
-    await updateMember(selectedMember._id, selectedMember);
-    alert('✅ Member: ' + selectedMember.name + ' updated SUCCESSFULLY!');
-    isLoadingMembers.value = true
-    await fetchAndResetPage();
-    isLoadingMembers.value = false
-    handleSearch(); // Re-apply the search filter
-    filterState.value = 'all' // Reset filter state to all
-  }
+    isSaving.value = true;
+    if (selectedMember) {
+        await updateMember(selectedMember._id, selectedMember);
+        alert('✅ Member: ' + selectedMember.name + ' updated SUCCESSFULLY!');
+        isSaving.value = false;
+        isLoadingMembers.value = true
+        await fetchAndResetPage();
+        isLoadingMembers.value = false
+        handleSearch(); // Re-apply the search filter
+        filterState.value = 'all' // Reset filter state to all
+    }
 };
 
 // toggle the deactivated state of a member
