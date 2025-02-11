@@ -50,7 +50,11 @@ const membersSchema = new mongoose.Schema({
   },
   profilePicture: {
     type: String,
-  }
+  },
+  startDate: {
+    type: Object,
+    required: true,
+  },
 });
 
 const Members = mongoose.models.Members || mongoose.model("Members", membersSchema);

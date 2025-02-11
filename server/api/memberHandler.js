@@ -39,6 +39,7 @@ export default defineEventHandler(async (event) => {
           codeNumber: body.codeNumber,
           deactivated: body.deactivated,
           profilePicture: body.profilePicture,
+          startDate: body.startDate,
         },
         { new: true }
       );

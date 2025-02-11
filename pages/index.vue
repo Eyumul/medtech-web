@@ -73,6 +73,7 @@
                         <TableHead class="text-center">Educational Document</TableHead>
                         <TableHead>Code N<u>o</u></TableHead>
                         <TableHead>Status</TableHead>
+                        <TableHead class="text-center">Start Date</TableHead>
                         <TableHead>State</TableHead>
                         <TableHead class="text-center">Actions</TableHead>
                     </TableRow>
@@ -109,6 +110,7 @@
         
                                 <TableCell>{{ member.codeNumber }}</TableCell>
                                 <TableCell>{{ member.status }}</TableCell>
+                                <TableCell class="text-center w-36">{{ formatDate(member.startDate, 'short') }}</TableCell>
                                 <TableCell :class="member.deactivated ? 'text-red-600':'text-green-500'">{{ member.deactivated ? 'Deactivated' : 'Active' }}</TableCell>
                                 <TableCell class="">
                                     <DropdownMenu class="relative">
@@ -135,7 +137,7 @@
                                                         </DialogDescription>
                                                     </DialogHeader>
                                                     <div class="grid grid-cols-2 gap-4 py-4">
-                                                        <div class="grid grid-cols-4 items-center justify-self-start gap-4 col-span-2">
+                                                        <div class="grid grid-cols-4 items-center justify-self-start gap-4">
                                                             <p class="text-right text-medcolor-green font-bold">Profile picture</p>
                                                             <label for="profilePicture" class="relative w-24 h-24 rounded-full border-2 border-dashed border-medcolor-blue flex items-center justify-center col-span-3 cursor-pointer overflow-hidden">
                                                                 <!-- Show uploaded image if available -->
@@ -152,6 +154,28 @@
                                                                 <!-- Hidden File Input -->
                                                                 <input @change="handleFileUpload($event, 'profilePicture', member)" accept="image/*" type="file" id="profilePicture"  class="hidden"/>
                                                             </label>
+                                                        </div>
+                                                        <div class="grid grid-cols-4 items-center gap-4">
+                                                            <Label class="text-right text-medcolor-green font-bold">
+                                                                Start date
+                                                            </Label>
+                                                            <Popover>
+                                                                <PopoverTrigger as-child>
+                                                                <Button
+                                                                    variant="outline"
+                                                                    :class="cn(
+                                                                    'w-[280px] justify-start text-left font-normal',
+                                                                    !member.startDate && 'text-muted-foreground',
+                                                                    )"
+                                                                >
+                                                                    <icon name="uil:calender" class="mr-2 h-4 w-4" />
+                                                                    {{ updatedStartDate ? updatedStartDate : formatDate(member.startDate, 'iso') }}
+                                                                </Button>
+                                                                </PopoverTrigger>
+                                                                <PopoverContent class="w-auto p-0">
+                                                                <Calendar v-model="updatedStartDate" initial-focus />
+                                                                </PopoverContent>
+                                                            </Popover>
                                                         </div>
                                                         <div class="grid grid-cols-4 items-center gap-4">
                                                             <Label for="name" class="text-right text-medcolor-green font-bold">
@@ -328,10 +352,14 @@
                                     <p class="text-medcolor-blue font-bold">State: </p>
                                     <p class="font-semibold text-lg" :class="member.deactivated ? 'text-red-500' : 'text-green-500'">{{ member.deactivated ? 'Deactivated' : 'Active' }}</p>
                                 </div>
+                                <div class="flex items-center gap-4">
+                                    <p class="text-medcolor-blue font-bold">Start Date: </p>
+                                    <p class="text-medcolor-green font-semibold text-lg">{{ formatDate(member.startDate, 'short')}}</p>
+                                </div>
                             </div>
                             <DialogFooter>
                                 <DialogClose as-child>
-                                    <Button type="button" class="bg-medcolor-blue px-12 hover:bg-medcolor-green">
+                                    <Button type="button" class="bg-medcolor-blue px-12 hover:bg-medcolor-green mt-8">
                                         Close
                                     </Button>
                                 </DialogClose>
@@ -379,7 +407,7 @@
                     </DialogDescription>
                 </DialogHeader>
                 <div class="grid grid-cols-2 gap-4 py-4">
-                    <div class="grid grid-cols-4 items-center justify-self-start gap-4 col-span-2">
+                    <div class="grid grid-cols-4 items-center justify-self-start gap-4">
                         <p class="text-right text-medcolor-green font-bold">Profile Picture</p>
                         <label for="profilePicture" class="relative w-24 h-24 rounded-full border-2 border-dashed border-medcolor-blue flex items-center justify-center col-span-3 cursor-pointer overflow-hidden">
                             <!-- Show uploaded image if available -->
@@ -396,6 +424,29 @@
                             <!-- Hidden File Input -->
                             <input @change="handleFileUpload($event, 'profilePicture')" accept="image/*" type="file" id="profilePicture"  class="hidden"/>
                         </label>
+                    </div>
+                    <div class="grid grid-cols-4 items-center gap-4">
+                        <Label class="text-right text-medcolor-green font-bold">
+                            Start date
+                        </Label>
+                        <Popover>
+                            <PopoverTrigger as-child>
+                            <Button
+                                variant="outline"
+                                :class="[
+                                    'w-[280px] justify-start text-left font-normal',
+                                    !startDate ? 'text-muted-foreground' : '',
+                                    errors.name ? 'border-red-500' : '',
+                                ]"
+                            >
+                                <icon name="uil:calender" class="mr-2 h-4 w-4" />
+                                {{ startDate ? df.format(startDate.toDate(getLocalTimeZone())) : "Pick a date" }}
+                            </Button>
+                            </PopoverTrigger>
+                            <PopoverContent class="w-auto p-0">
+                            <Calendar v-model="startDate" initial-focus />
+                            </PopoverContent>
+                        </Popover>
                     </div>
                     <div class="grid grid-cols-4 items-center gap-4">
                         <Label for="name" class="text-right text-medcolor-green font-bold">
@@ -480,6 +531,7 @@
                     <p v-if="errors.surety">{{ errors.surety }}</p>
                     <p v-if="errors.codeNumber">{{ errors.codeNumber }}</p>
                     <p v-if="errors.status">{{ errors.status }}</p>
+                    <p v-if="errors.startDate">{{ errors.startDate }}</p>
                     <p v-if="errors.suretyDocument">{{ errors.suretyDocument }}</p>
                     <p v-if="errors.educationalDocument">{{ errors.educationalDocument }}</p>
                     <!-- <p v-if="response">{{ response.error }}</p>
@@ -508,6 +560,38 @@
 import { useMembers } from '~/composables/useMembers';
 import { useForm, useField } from 'vee-validate';
 import * as yup from 'yup';
+import {  DateFormatter, getLocalTimeZone } from '@internationalized/date'
+import { cn } from '~/lib/utils'
+
+const df = new DateFormatter('en-US', {
+  dateStyle: 'long',
+})
+
+function formatDate(dateObj, format = 'short') {
+  const { year, month, day } = dateObj;
+
+  // Ensure month is zero-padded (e.g., 2 -> 02)
+  const paddedMonth = String(month).padStart(2, '0');
+  const paddedDay = String(day).padStart(2, '0');
+
+  // Month names for the "short" format
+  const monthNames = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ];
+
+  if (format === 'short') {
+    // Format as "13 Feb, 2025"
+    return `${day} ${monthNames[month - 1]}, ${year}`;
+  } else if (format === 'iso') {
+    // Format as "2025-02-13" (ISO format)
+    return `${year}-${paddedMonth}-${paddedDay}`;
+  } else {
+    throw new Error('Invalid format option. Use "short" or "iso".');
+  }
+}
+
+const updatedStartDate = ref('');
 
 // drop down ref
 const activeDropdown = ref(null);
@@ -575,6 +659,7 @@ const newMember = ref({
     educationalDocument: '',
     codeNumber: '',
     profilePicture: '',
+    startDate: '',
 });
 
 // validation setting
@@ -591,6 +676,7 @@ const schema = yup.object({
     codeNumber: yup.string().required('Code Number is required'),
     status: yup.string().required('Status is required'),
     profilePicture: yup.string().nullable(),
+    startDate: yup.string().required('Start Date is required'),
 });
 
 //validation schema
@@ -609,6 +695,7 @@ const [salary, salaryAttrs] = defineField('salary');
 const [codeNumber, codeNumberAttrs] = defineField('codeNumber');
 const [status, statusAttrs] = defineField('status');
 const [profilePicture, profilePictureAttrs] = defineField('profilePicture');
+const [startDate, startDateAttrs] = defineField('startDate');
 
 // fetch member and reset pagination
 const fetchAndResetPage = async () => {
@@ -703,7 +790,7 @@ const handleFileUpload = (event, field, member = newMember.value) => {
 };
 
 // Sync vee-validate fields with newMember
-const fields = { name, email, age, position, salary, surety, suretyDocument, educationalDocument, codeNumber, status, profilePicture };
+const fields = { name, email, age, position, salary, surety, suretyDocument, educationalDocument, codeNumber, status, profilePicture, startDate };
 Object.entries(fields).forEach(([key, field]) => {
   watch(field, (newValue) => {
     newMember.value[key] = newValue;
@@ -719,7 +806,6 @@ const handleAdd = handleSubmit(async () => {
         console.error("Failed to add member:", response.error);
         // Display user-friendly error message
         alert("❗ Error: " + response.error);
-        resetForm();
         isSubmitting.value = false;
     } else {
         console.log("Success:", response.member);
@@ -757,6 +843,7 @@ const resetFields = () => {
             educationalDocument: '',
             codeNumber: '',
             profilePicture: '',
+            startDate: '',
     };
     resetForm(); // Resets all fields
 };
@@ -780,6 +867,7 @@ const handleDelete = async (id) => {
 const handleUpdate = async (selectedMember) => {
     isSaving.value = true;
     if (selectedMember) {
+        selectedMember.startDate = updatedStartDate.value;
         await updateMember(selectedMember._id, selectedMember);
         alert('✅ Member: ' + selectedMember.name + ' updated SUCCESSFULLY!');
         isSaving.value = false;
