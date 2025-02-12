@@ -139,7 +139,7 @@
                                                     <div class="grid grid-cols-2 gap-4 py-4">
                                                         <div class="grid grid-cols-4 items-center justify-self-start gap-4">
                                                             <p class="text-right text-medcolor-green font-bold">Profile picture</p>
-                                                            <label for="profilePicture" class="relative w-24 h-24 rounded-full border-2 border-dashed border-medcolor-blue flex items-center justify-center col-span-3 cursor-pointer overflow-hidden">
+                                                            <label for="profilePicture" class="relative w-24 h-24 rounded-full border-2 border-dashed border-medcolor-blue flex items-center justify-center col-span-2 cursor-pointer overflow-hidden">
                                                                 <!-- Show uploaded image if available -->
                                                                 <img v-if="member.profilePicture" :src="member.profilePicture" alt="Profile Picture" class="absolute w-full h-full object-cover rounded-full" />
                                                                 <!-- Add Image Icon (Displayed before upload) -->
@@ -154,6 +154,7 @@
                                                                 <!-- Hidden File Input -->
                                                                 <input @change="handleFileUpload($event, 'profilePicture', member)" accept="image/*" type="file" id="profilePicture"  class="hidden"/>
                                                             </label>
+                                                            <p class="text-sm -ml-16 font-medium text-yellow-600">max 8MB</p>
                                                         </div>
                                                         <div class="grid grid-cols-4 items-center gap-4">
                                                             <Label class="text-right text-medcolor-green font-bold">
@@ -272,8 +273,12 @@
                                                                 Cancel
                                                             </Button>
                                                         </DialogClose>
-                                                        <Button @click="handleUpdate(member)" type="submit" class="bg-medcolor-blue px-12 hover:bg-medcolor-green">
-                                                            <span v-if="!isSaving">Save</span>
+                                                        <Button @click="handleUpdate(member)" type="submit" class="bg-medcolor-blue px-12 hover:bg-medcolor-green" :disabled="isSaving || isUploading">
+                                                            <span v-if="!isSaving && !isUploading">Save</span>
+                                                            <span v-else-if="isUploading" class="flex items-center gap-2">
+                                                                <icon name="line-md:loading-twotone-loop" class="size-4"/>
+                                                                <p>Uploading...</p>
+                                                            </span>
                                                             <span v-else class="flex items-center gap-2">
                                                                 <icon name="line-md:loading-twotone-loop" class="size-4"/>
                                                                 <p>Saving...</p>
@@ -409,7 +414,7 @@
                 <div class="grid grid-cols-2 gap-4 py-4">
                     <div class="grid grid-cols-4 items-center justify-self-start gap-4">
                         <p class="text-right text-medcolor-green font-bold">Profile Picture</p>
-                        <label for="profilePicture" class="relative w-24 h-24 rounded-full border-2 border-dashed border-medcolor-blue flex items-center justify-center col-span-3 cursor-pointer overflow-hidden">
+                        <label for="profilePicture" class="relative w-24 h-24 rounded-full border-2 border-dashed border-medcolor-blue flex items-center justify-center col-span-2 cursor-pointer overflow-hidden">
                             <!-- Show uploaded image if available -->
                             <img v-if="newMember.profilePicture" :src="newMember.profilePicture" alt="Profile Picture" class="absolute w-full h-full object-cover rounded-full" />
                             <!-- Add Image Icon (Displayed before upload) -->
@@ -424,6 +429,7 @@
                             <!-- Hidden File Input -->
                             <input @change="handleFileUpload($event, 'profilePicture')" accept="image/*" type="file" id="profilePicture"  class="hidden"/>
                         </label>
+                        <p class="text-sm -ml-16 font-medium text-yellow-600">max 8MB</p>
                     </div>
                     <div class="grid grid-cols-4 items-center gap-4">
                         <Label class="text-right text-medcolor-green font-bold">
@@ -543,8 +549,12 @@
                             Cancel
                         </Button>
                     </DialogClose>
-                    <Button type="submit" @click="handleAdd" class="bg-medcolor-blue px-12 hover:bg-medcolor-green">
-                        <span v-if="!isSubmitting">Submit</span>
+                    <Button type="submit" @click="handleAdd" class="bg-medcolor-blue px-12 hover:bg-medcolor-green" :disabled="isSubmitting || isUploading">
+                        <span v-if="!isSubmitting && !isUploading">Submit</span>
+                        <span v-else-if="isUploading" class="flex items-center gap-2">
+                            <icon name="line-md:loading-twotone-loop" class="size-4"/>
+                            <p>Uploading...</p>
+                        </span>
                         <span v-else class="flex items-center gap-2">
                             <icon name="line-md:loading-twotone-loop" class="size-4"/>
                             <p>Submitting...</p>
@@ -614,6 +624,7 @@ const { members, addMember, fetchMembers, updateMember, deleteMember } = useMemb
 const isLoadingMembers = ref(true);
 const isSubmitting = ref(false);
 const isSaving = ref(false);
+const isUploading = ref(false);
 
 // fetch members and show that loading is finished
 await fetchMembers();
@@ -767,27 +778,43 @@ const handleSearch = () => {
 };
 
 // Function to change the uploaded document to Base64 string
-const handleFileUpload = (event, field, member = newMember.value) => {
+const handleFileUpload = async (event, field, member = newMember.value) => {
     const file = event.target.files[0];
-    if (field == 'suretyDocument'){
+    if (!file) return;
+
+    if (field === "suretyDocument") {
         suretyDocument.value = file;
-    } else if ( field == 'educationalDocument') {
+    } else if (field === "educationalDocument") {
         educationalDocument.value = file;
     }
+    isUploading.value = true;
+    try {
+        const formData = new FormData();
+        formData.append("file", file);
 
-    if (file) {
-        const reader = new FileReader();
-        reader.readAsDataURL(file); // Convert PDF to Base64
+        // Upload to Cloudinary via your API
+        const response = await fetch("/api/upload", {
+            method: "POST",
+            body: formData,
+        });
 
-        reader.onload = () => {
-            member[field] = reader.result; // Store Base64 string
-        };
+        const result = await response.json();
 
-        reader.onerror = (error) => {
-            console.error('Error converting PDF to Base64:', error);
-        };
+        if (result.error) {
+            console.error("Upload failed:", result.error);
+            isUploading.value = false;
+            return;
+        }
+
+        // Store Cloudinary file URL instead of Base64
+        member[field] = result.url;
+        isUploading.value = false;
+    } catch (error) {
+        console.error("Error uploading file:", error);
+        isUploading.value = false;
     }
 };
+
 
 // Sync vee-validate fields with newMember
 const fields = { name, email, age, position, salary, surety, suretyDocument, educationalDocument, codeNumber, status, profilePicture, startDate };
@@ -867,7 +894,7 @@ const handleDelete = async (id) => {
 const handleUpdate = async (selectedMember) => {
     isSaving.value = true;
     if (selectedMember) {
-        selectedMember.startDate = updatedStartDate.value;
+        selectedMember.startDate = updatedStartDate.value ? updatedStartDate.value : selectedMember.startDate;
         await updateMember(selectedMember._id, selectedMember);
         alert('✅ Member: ' + selectedMember.name + ' updated SUCCESSFULLY!');
         isSaving.value = false;
