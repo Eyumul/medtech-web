@@ -364,10 +364,13 @@
                             </div>
                             <DialogFooter>
                                 <DialogClose as-child>
-                                    <Button type="button" class="bg-medcolor-blue px-12 hover:bg-medcolor-green mt-8">
+                                    <Button variant="outline" type="button" class="print:hidden mt-8 px-12 border-medcolor-blue text-medcolor-blue hover:border-medcolor-green hover:text-medcolor-green hover:bg-transparent">
                                         Close
                                     </Button>
                                 </DialogClose>
+                                <Button @click="printPage" class="print:hidden mt-8 px-8 bg-medcolor-blue hover:bg-medcolor-green">
+                                    <icon name="uil:print" class="w-4 h-4 mr-2" />Print 
+                                </Button>
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
@@ -576,6 +579,10 @@ import { cn } from '~/lib/utils'
 const df = new DateFormatter('en-US', {
   dateStyle: 'long',
 })
+
+const printPage = () => {
+  window.print();
+};
 
 function formatDate(dateObj, format = 'short') {
   const { year, month, day } = dateObj;
@@ -927,3 +934,12 @@ const toggleMemberState = async (member) => {
   handleDeactivateStateFilter(); // Re-apply the deactivate state filter
 };
 </script>
+
+<style>
+    /* hide element form print */
+    @media print {
+        .print\:hidden {
+            display: none !important;
+        }
+    }
+</style>
